@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding = UTF-8
+Type=Application
+Name=<Auto Run>
+Comment=My Python Program
+Exec=python -O \//home/xinda/620/MainSpring.py
+StartupNotify=false
+Terminal=true
+Hidden=false

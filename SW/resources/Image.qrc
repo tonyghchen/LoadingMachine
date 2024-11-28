@@ -1,0 +1,116 @@
+<RCC>
+  <qresource prefix="Circle">
+    <file>Picture/ZoomOut.png</file>
+    <file>Picture/ZoomIn.png</file>
+    <file>Picture/AI.png</file>
+    <file>Picture/Next_2.png</file>
+    <file>Picture/Previous_2.png</file>
+    <file>Picture/Next_1.png</file>
+    <file>Picture/Previous_1.png</file>
+    <file>Picture/EDIT_ICON.png</file>
+    <file>Picture/EDIT1.png</file>
+    <file>Picture/undo.png</file>
+    <file>Picture/文件.png</file>
+    <file>Picture/MainSpring.jpg</file>
+    <file>Picture/Plus.png</file>
+    <file>Picture/Minus.png</file>
+  </qresource>
+  <qresource prefix="Medical">
+    <file>Picture/Arrow Double.png</file>
+    <file>Picture/arrow up down.png</file>
+    <file>Picture/Arrow Right45.png</file>
+    <file>Picture/Arrow Leftt45.png</file>
+    <file>Picture/down arrow.png</file>
+    <file>Picture/up arrow.png</file>
+  </qresource>
+  <qresource prefix="Button">
+    <file>Picture/mute_on.png</file>
+    <file>Picture/Search.png</file>
+    <file>Picture/Volume-Down.png</file>
+    <file>Picture/volume-mute.png</file>
+    <file>Picture/Volume-up.png</file>
+    <file>Picture/Pause.png</file>
+    <file>Picture/Next.png</file>
+    <file>Picture/F.png</file>
+    <file>Picture/FF.png</file>
+    <file>Picture/R.png</file>
+    <file>Picture/RR.png</file>
+    <file>Picture/Previous.png</file>
+    <file>Picture/cutter1.png</file>
+    <file>Picture/camera.png</file>
+    <file>Picture/DiskSave.png</file>
+    <file>Picture/Handwheel1.png</file>
+    <file>Picture/yes.png</file>
+    <file>Picture/no.png</file>
+    <file>Picture/DiskNoSave.png</file>
+    <file>Picture/cutter.png</file>
+    <file>Picture/usb-copy1.png</file>
+    <file>Picture/usb-copy.png</file>
+    <file>Picture/LeftTeach.png</file>
+    <file>Picture/CopyAll.png</file>
+    <file>Picture/Save.png</file>
+    <file>Picture/RightTeach.png</file>
+    <file>Picture/RightInsert.png</file>
+    <file>Picture/AlignRight.png</file>
+    <file>Picture/LeftInsert.png</file>
+    <file>Picture/AlignLeft.png</file>
+    <file>Picture/Running.gif</file>
+    <file>Picture/Copy.png</file>
+    <file>Picture/Add.png</file>
+    <file>Picture/Tool.png</file>
+    <file>Picture/SD2Disk.png</file>
+    <file>Picture/BarSingle.png</file>
+    <file>Picture/Disk2SD.png</file>
+    <file>Picture/BarGroup2.png</file>
+    <file>Picture/BarGroup.png</file>
+    <file>Picture/BarGroup1.png</file>
+    <file>Picture/trash.png</file>
+    <file>Picture/Close.png</file>
+    <file>Picture/Down.png</file>
+    <file>Picture/Down_1.png</file>
+    <file>Picture/Down_2.png</file>
+    <file>Picture/Down_3.png</file>
+    <file>Picture/Up.png</file>
+  </qresource>
+  <qresource prefix="Tab">
+    <file>Picture/Updownlimit.png</file>
+    <file>Picture/wrench-256.png</file>
+    <file>Picture/table.png</file>
+    <file>Picture/clock-256.png</file>
+  </qresource>
+  <qresource prefix="Title">
+    <file>Picture/NumericKeypad1.png</file>
+    <file>Picture/flash-disk.png</file>
+    <file>Picture/NumericKeypad2.png</file>
+  </qresource>
+  <qresource prefix="Paremter">
+    <file>Picture/AlignLeft.png</file>
+    <file>Picture/Unlock.png</file>
+    <file>Picture/Lock.png</file>
+  </qresource>
+  <qresource prefix="Dialog">
+    <file>Picture/Up.png</file>
+    <file>Picture/Enter.png</file>
+    <file>Picture/Sign.png</file>
+    <file>Picture/Down.png</file>
+    <file>Picture/Left.png</file>
+    <file>Picture/Right.png</file>
+    <file>Picture/Backspace.png</file>
+  </qresource>
+  <qresource prefix="Album">
+    <file>Picture/Sorting.png</file>
+    <file>Picture/Save.png</file>
+    <file>Picture/FileAdd.png</file>
+    <file>Picture/FileOpen.png</file>
+    <file>Picture/PhotoRemove.png</file>
+    <file>Picture/trashcan.png</file>
+    <file>Picture/PhotoAdd.png</file>
+  </qresource>
+  <qresource prefix="Movie">
+    <file>gif/Running.gif</file>
+    <file>gif/Timer.gif</file>
+  </qresource>
+  <qresource prefix="Style">
+    <file>qss/style_main.qss</file>
+  </qresource>
+</RCC>
