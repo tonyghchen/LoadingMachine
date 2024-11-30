@@ -339,6 +339,9 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
 
             elif lForceLoad == "":            # Force load 為開新檔案, 強制讀取Default data
                 my_print("Paramter File Not Found")     # 開檔錯誤 關閉程式
+                self.gdicParaData = newData  
+                self.Language = Language.Language(self.gdicParaData["Language"])         
+
                 ErrorMsg = self.Language.GetText("PARA") + self.Language.GetErrorMessage("File_No_Found")
                 self.fAll_Open_messagebox(ErrorMsg, 3)
                 #sys.exit(1)  # 关闭应用程序
@@ -531,16 +534,6 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.save_thread = None # Save thread
 
         # -------------------------------------------------------------
-        self.initVariable()
-        self.fFile_LoadParameter()
-        self.Language = Language.Language(self.gdicParaData["Language"])         
-
-        self.fAll_InitEvent()
-        self.fAll_initUI()
-
-        self.tabWidget_Main.setCurrentWidget(self.tab_Run)
-
-        # -------------------------------------------------------------
         # Progress Window Setup
         self.progress_widget = QtWidgets.QDialog(self)
         self.progress = Ui_ProgressBar()
@@ -553,6 +546,15 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
 
         self.msg_box_hint = QMessageBox()
         self.msg_box_hint.setIcon(QMessageBox.Warning)
+        # -------------------------------------------------------------
+        self.initVariable()
+        self.fFile_LoadParameter()
+        self.Language = Language.Language(self.gdicParaData["Language"])         
+
+        self.fAll_InitEvent()
+        self.fAll_initUI()
+
+        self.tabWidget_Main.setCurrentWidget(self.tab_Run)
         self.msg_box_hint.setWindowTitle(self.Language.GetText("Error"))
 
         # -------------------------------------------------------------

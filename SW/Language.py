@@ -61,6 +61,10 @@ ArrLanguage = {
                         "文件已存在 !!! 請選擇其他",
                         "文件已存在 !!! 请选择其他",
                         "File Existent !!! Please select other"],
+    "File_No_Found"  :[ "File No Found, Load Default",
+                        "文件未找到, 載入初始值",
+                        "文件未找到, 载入初始值",
+                        "File No Found, Load Default"],
 
     "File_Overwrite"    :[ "File Existent !!! Overwrite File",
                         "文件已存在 !!! 覆蓋文件",
