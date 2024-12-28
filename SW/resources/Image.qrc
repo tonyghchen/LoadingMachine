@@ -16,9 +16,11 @@
     <file>Picture/Minus.png</file>
   </qresource>
   <qresource prefix="Medical">
+    <file>Picture/Arrow Right45.png</file>
+    <file>Picture/Arrow Right Left 45.png</file>
     <file>Picture/Arrow Double.png</file>
     <file>Picture/arrow up down.png</file>
-    <file>Picture/Arrow Right45.png</file>
+    <file>Picture/arrow up down1.png</file>
     <file>Picture/Arrow Leftt45.png</file>
     <file>Picture/down arrow.png</file>
     <file>Picture/up arrow.png</file>
@@ -107,7 +109,7 @@
     <file>Picture/PhotoAdd.png</file>
   </qresource>
   <qresource prefix="Movie">
-    <file>gif/Running.gif</file>
+    <file>gif/Process2-unscreen.gif</file>
     <file>gif/Timer.gif</file>
   </qresource>
   <qresource prefix="Style">

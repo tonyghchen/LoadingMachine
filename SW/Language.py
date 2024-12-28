@@ -47,7 +47,8 @@ ArrLanguage = {
 
     "ZERO"          :["RETURN"      ,"歸零"         ,"归零"        ,"RETURN"     ],
     "START"         :["START"       ,"起始"         ,"起始"        ,"START"],
-    
+    "Load"          :["Load"        ,"負載"         ,"负载"        ,"Load"],
+    "Process"       :["Process"     ,"程序"         ,"程序"        ,"Process"             ],
 
     "File_Open_Error"   :[ "File Open Error !!!",
                         "檔案開啟錯誤 !!!",

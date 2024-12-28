@@ -5,9 +5,10 @@
 """
 import sys, json, os, copy
 import globals
+import orjson       as json
 import Language     as Language
 import ParamTable   as ParamTable
-import orjson       as json
+import DataFormat   as DataFormat
 
 from functools          import partial
 from PySide6            import QtWidgets, QtGui, QtCore
@@ -256,6 +257,12 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
     # ----------------------------------------------------------------------
     def fRun_Reset(self):
 
+        self.gdicPosData["UpDown"] = 0 
+        self.gdicPosData["FR"] = 0
+
+        self.fRun_UpDownValueDisplay(self.gdicPosData["UpDown"])
+        self.fRun_FRValueDisplay(self.gdicPosData["FR"])
+
         my_print("fRun_Reset")
 
     # ----------------------------------------------------------------------
@@ -281,6 +288,86 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         objName = sender.objectName()
 
         my_print("ObjName:", objName)
+
+    # ----------------------------------------------------------------------
+    # Function : Change Language by iLanguage setting
+    # Input : None
+    # Return: None
+    # ----------------------------------------------------------------------
+    def fRun_ProcessSwitch(self):
+
+        sender = self.sender()  # Get the button that emitted the signal
+        if  sender is not None:
+            objName = sender.objectName()
+
+            if  objName == "pushButton_Process1":
+                self.gfProcessSwitch = "Process12"
+            else:
+                self.gfProcessSwitch = "Process2"
+        
+        self.fRun_ProcessButtonDisplay()
+
+    def fRun_ProcessButtonDisplay(self):
+
+        if  self.gfProcessSwitch == "Process2":
+            self.pushButton_Process1.setStyleSheet("background-color: white;")
+            self.pushButton_Process2.setStyleSheet("background-color: #55FFFF;")
+        else:
+            self.pushButton_Process1.setStyleSheet("background-color: #55FFFF;")
+            self.pushButton_Process2.setStyleSheet("background-color: white;")
+
+    # ----------------------------------------------------------------------
+    # Set Process
+    # Description: fRun_Position
+    # Input : None
+    # Return: None
+    # ----------------------------------------------------------------------
+    def fRun_Position(self):
+
+        sender = self.sender()  # Get the button that emitted the signal
+        objName = sender.objectName()
+
+        my_print("ObjName:", objName)
+
+        if self.gdicParaData["Power"] > 3:
+            self.gdicParaData["Power"] = 2
+        
+        liPower = 10 ** self.gdicParaData["Power"]
+
+        # Up Down
+        if objName in ["pushButton_Up", "pushButton_Down"]:
+            if objName == "pushButton_Up":
+                self.gdicPosData["UpDown"] = self.fRun_UpDownValueDisplay(self.gdicPosData["UpDown"]+liPower)
+            else:
+                self.gdicPosData["UpDown"] = self.fRun_UpDownValueDisplay(self.gdicPosData["UpDown"]-liPower)
+        # Front Rear
+        else:
+            if objName == "pushButton_Front":
+                self.gdicPosData["FR"] = self.fRun_FRValueDisplay(self.gdicPosData["FR"]-liPower)
+            else:
+                self.gdicPosData["FR"] = self.fRun_FRValueDisplay(self.gdicPosData["FR"]+liPower)
+
+
+    def fRun_FRValueDisplay(self, value = 0):
+
+        if value > 1000:
+            value = 1000
+        elif value < 0:
+            value = 0
+
+        self.label_FRValue.setText(str(value))
+        return value
+
+
+    def fRun_UpDownValueDisplay(self, value = 0):
+
+        if value > 1000:
+            value = 1000
+        elif value < 0:
+            value = 0
+
+        self.label_UpDownValue.setText(str(value))
+        return value
 
     # ----------------------------------------------------------------------
     #    File Process
@@ -419,23 +506,27 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.tabWidget_Main.setTabText(0, self.Language.GetText("RUN"))
         self.tabWidget_Main.setTabText(1, self.Language.GetText("PARA"))
 
-        self.pushButton_0Set.setText(self.Language.GetText("SET"))
-        self.pushButton_1Set.setText(self.Language.GetText("SET"))
-        self.pushButton_2Set.setText(self.Language.GetText("SET"))
-        self.pushButton_FRSet.setText(self.Language.GetText("SET"))
+        self.pushButton_Updown1.setText(self.Language.GetText("SET"))
+        self.pushButton_Updown2.setText(self.Language.GetText("SET"))
+        self.pushButton_FRSet1.setText(self.Language.GetText("SET"))
+        self.pushButton_FRSet2.setText(self.Language.GetText("SET"))
 
-        if  self.gdicParaData["Language"] == 0: # English
-            self.label_0Label.setStyleSheet("font-size: 26px;")
-        else:
-            self.label_0Label.setStyleSheet("font-size: 36px;")
-
-        self.label_0Label.setText(self.Language.GetText("START"))
+        self.label_LoadLable1.setText(self.Language.GetText("Load")+"-1")
+        self.label_LoadLable2.setText(self.Language.GetText("Load")+"-2")
+        self.label_LoadLable3.setText(self.Language.GetText("Load")+"-3")
+        self.label_LoadLable4.setText(self.Language.GetText("Load")+"-4")
 
         self.pushButton_Reset.setText(self.Language.GetText("RESET"))
         self.pushButton_Zero.setText(self.Language.GetText("ZERO"))
 
-        my_print("Language:",Language)
+        # 程序按鍵
+        self.pushButton_Process1.setText(self.Language.GetText("Process")+" 1->2")
+        self.pushButton_Process2.setText(self.Language.GetText("Process")+" 2")
 
+        self.label_1Label.setText(self.Language.GetText("Process")+"1")
+        self.label_2Label.setText(self.Language.GetText("Process")+"2")
+
+        my_print("Language:",Language)
 
     # ----------------------------------------------------------------------
     # Description:  Error Msg
@@ -477,10 +568,21 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.pushButton_Reset.clicked.connect(self.fRun_Reset)
         self.pushButton_Zero.clicked.connect(self.fRun_Zero)
 
-        self.pushButton_0Set.clicked.connect(self.fRun_Set)
-        self.pushButton_1Set.clicked.connect(self.fRun_Set)
-        self.pushButton_2Set.clicked.connect(self.fRun_Set)
-        self.pushButton_FRSet.clicked.connect(self.fRun_Set)
+        # Updown, Front Rear Setup
+        self.pushButton_Updown1.clicked.connect(self.fRun_Set)
+        self.pushButton_Updown2.clicked.connect(self.fRun_Set)
+        self.pushButton_FRSet1.clicked.connect(self.fRun_Set)
+        self.pushButton_FRSet2.clicked.connect(self.fRun_Set)
+
+        # Updown, Front Rear Position 
+        self.pushButton_Up.clicked.connect(self.fRun_Position)
+        self.pushButton_Down.clicked.connect(self.fRun_Position)
+        self.pushButton_Front.clicked.connect(self.fRun_Position)
+        self.pushButton_Rear.clicked.connect(self.fRun_Position)
+
+        # Process Button Switch
+        self.pushButton_Process1.clicked.connect(self.fRun_ProcessSwitch)
+        self.pushButton_Process2.clicked.connect(self.fRun_ProcessSwitch)
 
         self.buttonGroup = QButtonGroup(self)
         self.buttonGroup.addButton(self.radioButton_English, 1)
@@ -499,14 +601,19 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
     # ----------------------------------------------------------------------
     def initVariable(self):
 
-        self.gsDisplayMode  = None
+        self.gsDisplayMode = None
         self.gsKeyinData = ""
         self.giKeyInterruptCnt = 0
-        self.gsKeyCmdData       = []
+        self.gsKeyCmdData = []
         self.gFilePath = current_directory + defProgramPath
+        self.gdicErrorMsg = {}             # Reset Error String       
 
-        self.gdicErrorMsg   = {}             # Reset Error String       
-        
+        self.gdicPosData = {}
+        self.gdicPosData["UpDown"] = 0
+        self.gdicPosData["FR"] = 0
+
+        self.gfProcessSwitch = "Process12"         # 設定成初始為 Process 1-2
+
     # ----------------------------------------------------------------------
     # Description:  UI initialize
     # Function:     initUi
@@ -518,7 +625,50 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.fDisplay_PWR(self.gdicParaData["Power"])
         self.fAll_LanguageDisplay(self.gdicParaData["Language"])
 
+        self.fRun_UpDownValueDisplay(self.gdicPosData["UpDown"])
+        self.fRun_FRValueDisplay(self.gdicPosData["FR"])
+
+
+        # Running GIF 
+        self.movie = QMovie(":/Movie/gif/Process2-unscreen.gif")          
+        self.label_GIF.setMovie(self.movie)
+        self.movie.start()
+
+        self.fRun_ProcessSwitch()
+
         my_print("End of initUI Function")
+
+    # ----------------------------------------------------------------------
+    # Description:  UI initialize
+    # Function:     initUi
+    # Input :       
+    # Return:       None
+    # ----------------------------------------------------------------------
+    def fAll_initUIStyle(self):
+
+        self.setCentralWidget(self.tabWidget_Main)
+        self.tabWidget_Main.setStyleSheet("QTabWidget {border: 3px dashed blue;}")
+        lClockTabSize = 10             # Clock Label width size
+
+        tab_bar = self.tabWidget_Main.tabBar()
+        tab_bar.setStyleSheet("""
+            QTabBar::tab {
+                height: 50px;   
+                width: 492px;
+                border-radius: 4px;
+                background-color: %s;
+                color: %s;
+                font-weight: bold;  
+            }
+            QTabBar::tab:selected {
+                background-color: %s;                              
+                color: %s;
+            }
+            QTabBar::tab:first {
+                background-repeat: no-repeat;
+                margin-left: %spx;
+            }                              
+       """ % ("#CDCDCD", "#585858", "#888888", "white", lClockTabSize ))        
 
     # ----------------------------------------------------------------------
     # Description:  Main Window initialize
@@ -553,6 +703,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
 
         self.fAll_InitEvent()
         self.fAll_initUI()
+        self.fAll_initUIStyle()
 
         self.tabWidget_Main.setCurrentWidget(self.tab_Run)
         self.msg_box_hint.setWindowTitle(self.Language.GetText("Error"))

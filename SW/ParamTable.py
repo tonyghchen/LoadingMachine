@@ -8,10 +8,20 @@ ArrPara_TableDefault= {
     "ValueUpDown0"  : 0,
     "ValueUpDown1"  : 0,
     "ValueUpDown2"  : 0,
-    "ValueFR0"      : 0,
     "ValueFR1"      : 0,
     "ValueFR2"      : 0,
 }
+
+# ------------------------------------------------------------------
+#   Display Panel
+# ------------------------------------------------------------------
+MainPanel_TableForm = {
+    "Updown0"  :{"Group": "UpDown"  , "DigitFormat":"Digs3_Format"     ,"ObjName" : "label_Updown0"     ,"on_background": "#181818" ,"background" : "#08d"   ,"Enable": 1  },
+    "Updown1"  :{"Group": "UpDown"  , "DigitFormat":"Digs3_Format"     ,"ObjName" : "label_Updown1"     ,"on_background": "#181818" ,"background" : "#08d"   ,"Enable": 1  },
+    "Updown2"  :{"Group": "UpDown"  , "DigitFormat":"Digs3_Format"     ,"ObjName" : "label_Updown2"     ,"on_background": "#181818" ,"background" : "#08d"   ,"Enable": 1  },
+    "FR1"      :{"Group": "FR"      , "DigitFormat":"Digs3_Format"     ,"ObjName" : "label_FR1Value"    ,"on_background": "#181818" ,"background" : "#08d"   ,"Enable": 1  },
+    "FR2"      :{"Group": "FR"      , "DigitFormat":"Digs3_Format"     ,"ObjName" : "label_FR2Value"    ,"on_background": "#181818" ,"background" : "#08d"   ,"Enable": 1  },
+}  
 
 # ------------------------------------------------------------------
 #   PushBotton - have clicked event
