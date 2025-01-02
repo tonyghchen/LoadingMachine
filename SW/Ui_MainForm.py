@@ -146,12 +146,12 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_15.addWidget(self.label_LoadLable1)
 
-        self.progressBar = QProgressBar(self.horizontalFrame_Distance1)
-        self.progressBar.setObjectName(u"progressBar")
-        self.progressBar.setFont(font3)
-        self.progressBar.setValue(24)
+        self.progressBar1 = QProgressBar(self.horizontalFrame_Distance1)
+        self.progressBar1.setObjectName(u"progressBar1")
+        self.progressBar1.setFont(font3)
+        self.progressBar1.setValue(24)
 
-        self.horizontalLayout_15.addWidget(self.progressBar)
+        self.horizontalLayout_15.addWidget(self.progressBar1)
 
 
         self.verticalLayout_Weight.addWidget(self.horizontalFrame_Distance1)
@@ -167,12 +167,12 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_16.addWidget(self.label_LoadLable2)
 
-        self.progressBar_2 = QProgressBar(self.horizontalFrame_Distance2)
-        self.progressBar_2.setObjectName(u"progressBar_2")
-        self.progressBar_2.setFont(font3)
-        self.progressBar_2.setValue(24)
+        self.progressBar2 = QProgressBar(self.horizontalFrame_Distance2)
+        self.progressBar2.setObjectName(u"progressBar2")
+        self.progressBar2.setFont(font3)
+        self.progressBar2.setValue(24)
 
-        self.horizontalLayout_16.addWidget(self.progressBar_2)
+        self.horizontalLayout_16.addWidget(self.progressBar2)
 
 
         self.verticalLayout_Weight.addWidget(self.horizontalFrame_Distance2)
@@ -188,12 +188,12 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_19.addWidget(self.label_LoadLable3)
 
-        self.progressBar_4 = QProgressBar(self.horizontalFrame_Distance3)
-        self.progressBar_4.setObjectName(u"progressBar_4")
-        self.progressBar_4.setFont(font3)
-        self.progressBar_4.setValue(24)
+        self.progressBar3 = QProgressBar(self.horizontalFrame_Distance3)
+        self.progressBar3.setObjectName(u"progressBar3")
+        self.progressBar3.setFont(font3)
+        self.progressBar3.setValue(24)
 
-        self.horizontalLayout_19.addWidget(self.progressBar_4)
+        self.horizontalLayout_19.addWidget(self.progressBar3)
 
 
         self.verticalLayout_Weight.addWidget(self.horizontalFrame_Distance3)
@@ -209,12 +209,12 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_18.addWidget(self.label_LoadLable4)
 
-        self.progressBar_3 = QProgressBar(self.horizontalFrame_Distance4)
-        self.progressBar_3.setObjectName(u"progressBar_3")
-        self.progressBar_3.setFont(font3)
-        self.progressBar_3.setValue(24)
+        self.progressBar4 = QProgressBar(self.horizontalFrame_Distance4)
+        self.progressBar4.setObjectName(u"progressBar4")
+        self.progressBar4.setFont(font3)
+        self.progressBar4.setValue(24)
 
-        self.horizontalLayout_18.addWidget(self.progressBar_3)
+        self.horizontalLayout_18.addWidget(self.progressBar4)
 
 
         self.verticalLayout_Weight.addWidget(self.horizontalFrame_Distance4)
@@ -306,7 +306,7 @@ class Ui_MainWindow(object):
         self.tab_Paramter.setObjectName(u"tab_Paramter")
         self.gridLayoutWidget = QWidget(self.tab_Paramter)
         self.gridLayoutWidget.setObjectName(u"gridLayoutWidget")
-        self.gridLayoutWidget.setGeometry(QRect(7, 70, 1001, 301))
+        self.gridLayoutWidget.setGeometry(QRect(10, 80, 1001, 291))
         self.gridLayout_2 = QGridLayout(self.gridLayoutWidget)
         self.gridLayout_2.setSpacing(1)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
@@ -800,13 +800,13 @@ class Ui_MainWindow(object):
         self.pushButton_Process1.setText(QCoreApplication.translate("MainWindow", u"Process-1", None))
         self.pushButton_Process2.setText(QCoreApplication.translate("MainWindow", u"Process-2", None))
         self.label_LoadLable1.setText(QCoreApplication.translate("MainWindow", u"\u91cd\u91cf1", None))
-        self.progressBar.setFormat(QCoreApplication.translate("MainWindow", u"%pg", None))
+        self.progressBar1.setFormat(QCoreApplication.translate("MainWindow", u"%pg", None))
         self.label_LoadLable2.setText(QCoreApplication.translate("MainWindow", u"\u91cd\u91cf2", None))
-        self.progressBar_2.setFormat(QCoreApplication.translate("MainWindow", u"%pg", None))
+        self.progressBar2.setFormat(QCoreApplication.translate("MainWindow", u"%pg", None))
         self.label_LoadLable3.setText(QCoreApplication.translate("MainWindow", u"\u91cd\u91cf3", None))
-        self.progressBar_4.setFormat(QCoreApplication.translate("MainWindow", u"%pg", None))
+        self.progressBar3.setFormat(QCoreApplication.translate("MainWindow", u"%pg", None))
         self.label_LoadLable4.setText(QCoreApplication.translate("MainWindow", u"\u91cd\u91cf4", None))
-        self.progressBar_3.setFormat(QCoreApplication.translate("MainWindow", u"%pg", None))
+        self.progressBar4.setFormat(QCoreApplication.translate("MainWindow", u"%pg", None))
         self.label_UpDownValue1.setText(QCoreApplication.translate("MainWindow", u"000", None))
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"mm", None))
         self.label_3.setText("")

@@ -85,6 +85,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
     # ----------------------------------------------------------------------  
     def fUARTInit(self):
 
+        self.UARTCmd = UART.UARCommand(self, my_print, self.fgetVRRunMode)                                        
         lsHandler = "Handler" 
         lsDel = "Del"
         recCmdHandler = {
@@ -95,14 +96,18 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
             "defUART_rCurrProductTime"  : { lsHandler:self.fUARTCmd_rCurrProductTime,   lsDel : False },
             "defUART_rCurrFailQty"      : { lsHandler:self.fUARTCmd_rCurrFailQty,       lsDel : False },
             "defUART_rOverUnderFlow"    : { lsHandler:self.fUARTCmd_rOverUnderFlow,     lsDel : False },
-            "defUART_VersionNo"         : { lsHandler:self.fUARTCmd_rVersionNo,         lsDel : False }
-            "defUART_VersionNo"         : { lsHandler:self.fUARTCmd_rVersionNo,         lsDel : False }
+            "defUART_VersionNo"         : { lsHandler:self.fUARTCmd_rVersionNo,         lsDel : False },
+            "defUART_LoadCellData"      : { lsHandler:self.fUARTCmd_rLoadCellData,      lsDel : False }
         }
         for Code, Data in recCmdHandler.items():
             self.UARTCmd.RegisterReceiverCodeHandler(Code, Data[lsHandler], Data[lsDel])
+
      # ----------------------------------------------------------------------
     #  UART Functions
     # ----------------------------------------------------------------------
+    def fgetVRRunMode(self):
+        return (self.gfVRRunMode)
+
     def fUARTCmd_rErrorMsg(self, receiver_data, lCmd, liCmdReadBytes):
         lErrorAxis = receiver_data[2]
         lErrorCode = receiver_data[3]
@@ -157,13 +162,26 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         elif  sKeycode == "StopProd":       # 回原點 
             self.fUART_rKeyboard_StopProd()
 
-
     def fUARTCmd_rVersionNo(self, receiver_data, lCmd, liCmdReadBytes):
         lVersion1 =  receiver_data[2]
         lVersion2 =  receiver_data[3]
         lVersion3 =  int((receiver_data[5] << 8) | receiver_data[4])
         lsVersion = str(lVersion1) + "." + str(lVersion2) + "." + str(lVersion3)
         self.label_VersionSub.setText(lsVersion)
+
+    def fUARTCmd_rLoadCellData(self, receiver_data, lCmd, liCmdReadBytes):
+        self.gwLoadCellData[0] =  (receiver_data[3] << 8) | receiver_data[2]
+        self.gwLoadCellData[1] =  (receiver_data[5] << 8) | receiver_data[4]
+        self.gwLoadCellData[2] =  (receiver_data[7] << 8) | receiver_data[6]
+        self.gwLoadCellData[3] =  (receiver_data[9] << 8) | receiver_data[8]
+
+        self.progressBar1.setValue(self.gwLoadCellData[0])
+        self.progressBar2.setValue(self.gwLoadCellData[1])
+        self.progressBar3.setValue(self.gwLoadCellData[2])
+        self.progressBar4.setValue(self.gwLoadCellData[3])
+
+        my_print("LoadCell Data:",self.gwLoadCellData ) 
+
 
     def fUARTCmd_rCurrProductQty(self, receiver_data, lCmd, liCmdReadBytes):
         lCurrentQty  = int((receiver_data[5] << 24) | (receiver_data[4] << 16) | (receiver_data[3] << 8) | receiver_data[2])
@@ -483,14 +501,14 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
             self.pushButton_Process1.setStyleSheet("background-color: white;")
             self.pushButton_Process2.setStyleSheet("background-color: #55FFFF;")
             # Running GIF 
-            self.movie = QMovie(":/Movie/gif/Process12.gif")          
+            self.movie = QMovie(":/Movie/gif/Process1.gif")          
 
         else:
             self.pushButton_Process1.setStyleSheet("background-color: #55FFFF;")
             self.pushButton_Process2.setStyleSheet("background-color: white;")
 
             # Running GIF 
-            self.movie = QMovie(":/Movie/gif/Process1.gif")          
+            self.movie = QMovie(":/Movie/gif/Process12.gif")          
 
         self.label_GIF.setMovie(self.movie)
         self.movie.start()
@@ -803,7 +821,11 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.gdicPosData["UpDown"] = 0
         self.gdicPosData["FR"] = 0
 
-        self.gfProcessSwitch = "Process12"         # 設定成初始為 Process 1-2
+        self.gfProcessSwitch = "Process12"          # 設定成初始為 Process 1-2
+        self.gfAllKeySW = 0                         # 1: Key lock, 2: Switch on, 3: Reset On
+        self.gfVRRunMode = 0                        # 1: Test Mode, 2: Production Mode
+
+        self.gwLoadCellData = [0,0,0,0]
         self.fUARTInit()
 
     # ----------------------------------------------------------------------
@@ -897,6 +919,9 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.fAll_InitEvent()
         self.fAll_initUI()
         self.fAll_initUIStyle()
+
+        if (self.UARTCmd is not None):
+            self.UARTCmd.ClearReceiverBuf()             # delete all UART Buffer     
 
         self.tabWidget_Main.setCurrentWidget(self.tab_Run)
         self.msg_box_hint.setWindowTitle(self.Language.GetText("Error"))
