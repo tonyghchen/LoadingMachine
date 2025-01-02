@@ -35,6 +35,7 @@
    <font>
     <family>Arial</family>
     <pointsize>14</pointsize>
+    <weight>75</weight>
     <bold>true</bold>
    </font>
   </property>
@@ -100,6 +101,7 @@
        <font>
         <family>微軟正黑體</family>
         <pointsize>16</pointsize>
+        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
@@ -107,7 +109,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_Run">
        <attribute name="title">
@@ -180,6 +182,7 @@
               <font>
                <family>Microsoft JhengHei UI</family>
                <pointsize>20</pointsize>
+               <weight>75</weight>
                <bold>true</bold>
               </font>
              </property>
@@ -215,6 +218,7 @@
               <font>
                <family>Microsoft JhengHei UI</family>
                <pointsize>20</pointsize>
+               <weight>75</weight>
                <bold>true</bold>
               </font>
              </property>
@@ -266,6 +270,7 @@
                  <font>
                   <family>微軟正黑體</family>
                   <pointsize>20</pointsize>
+                  <weight>75</weight>
                   <bold>true</bold>
                  </font>
                 </property>
@@ -280,6 +285,7 @@
                  <font>
                   <family>微軟正黑體</family>
                   <pointsize>20</pointsize>
+                  <weight>75</weight>
                   <bold>true</bold>
                  </font>
                 </property>
@@ -287,7 +293,7 @@
                  <number>24</number>
                 </property>
                 <property name="format">
-                 <string>%pg</string>
+                 <string>%vg</string>
                 </property>
                </widget>
               </item>
@@ -306,6 +312,7 @@
                  <font>
                   <family>微軟正黑體</family>
                   <pointsize>20</pointsize>
+                  <weight>75</weight>
                   <bold>true</bold>
                  </font>
                 </property>
@@ -320,6 +327,7 @@
                  <font>
                   <family>微軟正黑體</family>
                   <pointsize>20</pointsize>
+                  <weight>75</weight>
                   <bold>true</bold>
                  </font>
                 </property>
@@ -327,7 +335,7 @@
                  <number>24</number>
                 </property>
                 <property name="format">
-                 <string>%pg</string>
+                 <string>%vg</string>
                 </property>
                </widget>
               </item>
@@ -346,6 +354,7 @@
                  <font>
                   <family>微軟正黑體</family>
                   <pointsize>20</pointsize>
+                  <weight>75</weight>
                   <bold>true</bold>
                  </font>
                 </property>
@@ -360,6 +369,7 @@
                  <font>
                   <family>微軟正黑體</family>
                   <pointsize>20</pointsize>
+                  <weight>75</weight>
                   <bold>true</bold>
                  </font>
                 </property>
@@ -367,7 +377,7 @@
                  <number>24</number>
                 </property>
                 <property name="format">
-                 <string>%pg</string>
+                 <string>%vg</string>
                 </property>
                </widget>
               </item>
@@ -386,6 +396,7 @@
                  <font>
                   <family>微軟正黑體</family>
                   <pointsize>20</pointsize>
+                  <weight>75</weight>
                   <bold>true</bold>
                  </font>
                 </property>
@@ -400,6 +411,7 @@
                  <font>
                   <family>微軟正黑體</family>
                   <pointsize>20</pointsize>
+                  <weight>75</weight>
                   <bold>true</bold>
                  </font>
                 </property>
@@ -407,7 +419,7 @@
                  <number>24</number>
                 </property>
                 <property name="format">
-                 <string>%pg</string>
+                 <string>%vg</string>
                 </property>
                </widget>
               </item>
@@ -455,6 +467,7 @@
                    <font>
                     <family>微軟正黑體</family>
                     <pointsize>36</pointsize>
+                    <weight>75</weight>
                     <bold>true</bold>
                    </font>
                   </property>
@@ -547,6 +560,7 @@
                    <font>
                     <family>微軟正黑體</family>
                     <pointsize>36</pointsize>
+                    <weight>75</weight>
                     <bold>true</bold>
                    </font>
                   </property>
@@ -597,7 +611,7 @@
           <x>10</x>
           <y>80</y>
           <width>1001</width>
-          <height>291</height>
+          <height>321</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
@@ -625,6 +639,7 @@
             <font>
              <family>微軟正黑體</family>
              <pointsize>30</pointsize>
+             <weight>75</weight>
              <bold>true</bold>
             </font>
            </property>
@@ -648,6 +663,7 @@
             <font>
              <family>微軟正黑體</family>
              <pointsize>30</pointsize>
+             <weight>75</weight>
              <bold>true</bold>
             </font>
            </property>
@@ -710,6 +726,7 @@
                <font>
                 <family>Microsoft JhengHei UI</family>
                 <pointsize>16</pointsize>
+                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -736,6 +753,7 @@
                <font>
                 <family>微軟正黑體</family>
                 <pointsize>36</pointsize>
+                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -771,6 +789,7 @@
             <font>
              <family>微軟正黑體</family>
              <pointsize>22</pointsize>
+             <weight>75</weight>
              <bold>true</bold>
             </font>
            </property>
@@ -794,6 +813,7 @@
             <font>
              <family>微軟正黑體</family>
              <pointsize>30</pointsize>
+             <weight>75</weight>
              <bold>true</bold>
             </font>
            </property>
@@ -898,6 +918,7 @@
               <font>
                <family>微軟正黑體</family>
                <pointsize>24</pointsize>
+               <weight>75</weight>
                <bold>true</bold>
               </font>
              </property>
@@ -953,6 +974,7 @@
                <font>
                 <family>微軟正黑體</family>
                 <pointsize>36</pointsize>
+                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -1025,6 +1047,7 @@
                <font>
                 <family>微軟正黑體</family>
                 <pointsize>36</pointsize>
+                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -1057,6 +1080,7 @@
                <font>
                 <family>微軟正黑體</family>
                 <pointsize>16</pointsize>
+                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -1086,6 +1110,7 @@
             <font>
              <family>微軟正黑體</family>
              <pointsize>22</pointsize>
+             <weight>75</weight>
              <bold>true</bold>
             </font>
            </property>
@@ -1144,6 +1169,7 @@
             <font>
              <family>微軟正黑體</family>
              <pointsize>30</pointsize>
+             <weight>75</weight>
              <bold>true</bold>
             </font>
            </property>
@@ -1180,6 +1206,7 @@ color: rgb(255, 0, 0);</string>
             <font>
              <family>微軟正黑體</family>
              <pointsize>30</pointsize>
+             <weight>75</weight>
              <bold>true</bold>
             </font>
            </property>
@@ -1288,6 +1315,7 @@ color: rgb(255, 0, 0);</string>
                <font>
                 <family>微軟正黑體</family>
                 <pointsize>36</pointsize>
+                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -1323,6 +1351,7 @@ color: rgb(255, 0, 0);</string>
             <font>
              <family>微軟正黑體</family>
              <pointsize>30</pointsize>
+             <weight>75</weight>
              <bold>true</bold>
             </font>
            </property>
@@ -1441,6 +1470,7 @@ color: rgb(255, 0, 0);</string>
                <font>
                 <family>微軟正黑體</family>
                 <pointsize>24</pointsize>
+                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -1494,6 +1524,7 @@ color: rgb(255, 0, 0);</string>
                <font>
                 <family>微軟正黑體</family>
                 <pointsize>36</pointsize>
+                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -1573,6 +1604,7 @@ color: rgb(255, 0, 0);</string>
                <font>
                 <family>微軟正黑體</family>
                 <pointsize>36</pointsize>
+                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -1689,6 +1721,7 @@ color: rgb(255, 0, 0);</string>
             <font>
              <family>Arial</family>
              <pointsize>18</pointsize>
+             <weight>75</weight>
              <bold>true</bold>
             </font>
            </property>
@@ -1712,6 +1745,7 @@ color: rgb(255, 0, 0);</string>
             <font>
              <family>Arial</family>
              <pointsize>18</pointsize>
+             <weight>75</weight>
              <bold>true</bold>
             </font>
            </property>
@@ -1735,6 +1769,7 @@ color: rgb(255, 0, 0);</string>
             <font>
              <family>Arial</family>
              <pointsize>18</pointsize>
+             <weight>75</weight>
              <bold>true</bold>
             </font>
            </property>

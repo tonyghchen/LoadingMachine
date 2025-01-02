@@ -908,6 +908,11 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.progress_widget.setFixedSize(self.progress_widget.size())
         self.progress.movie = QMovie(":/Movie/gif/Timer.gif")                       
         self.progress.label_Movie.setMovie(self.progress.movie)
+        
+        self.progressBar1.setRange(0, 5000);
+        self.progressBar2.setRange(0, 5000);
+        self.progressBar3.setRange(0, 5000);
+        self.progressBar4.setRange(0, 5000);        
 
         self.msg_box_hint = QMessageBox()
         self.msg_box_hint.setIcon(QMessageBox.Warning)

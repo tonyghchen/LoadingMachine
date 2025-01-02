@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'MainForm.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.7.2
+## Created by: Qt User Interface Compiler version 6.7.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -39,7 +39,7 @@ class Ui_MainWindow(object):
         font.setPointSize(14)
         font.setBold(True)
         MainWindow.setFont(font)
-        MainWindow.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
+        MainWindow.setCursor(QCursor(Qt.ArrowCursor))
         MainWindow.setTabletTracking(True)
         MainWindow.setLayoutDirection(Qt.LeftToRight)
         MainWindow.setAutoFillBackground(False)
@@ -306,7 +306,7 @@ class Ui_MainWindow(object):
         self.tab_Paramter.setObjectName(u"tab_Paramter")
         self.gridLayoutWidget = QWidget(self.tab_Paramter)
         self.gridLayoutWidget.setObjectName(u"gridLayoutWidget")
-        self.gridLayoutWidget.setGeometry(QRect(10, 80, 1001, 291))
+        self.gridLayoutWidget.setGeometry(QRect(10, 80, 1001, 321))
         self.gridLayout_2 = QGridLayout(self.gridLayoutWidget)
         self.gridLayout_2.setSpacing(1)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
@@ -410,7 +410,7 @@ class Ui_MainWindow(object):
         self.pushButton_Rear.setSizePolicy(sizePolicy4)
         self.pushButton_Rear.setStyleSheet(u"background-color: rgb(85, 255, 255);")
         icon = QIcon()
-        icon.addFile(u":/Medical/Picture/Arrow Right45.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon.addFile(u":/Medical/Picture/Arrow Right45.png", QSize(), QIcon.Normal, QIcon.Off)
         self.pushButton_Rear.setIcon(icon)
         self.pushButton_Rear.setIconSize(QSize(80, 80))
         self.pushButton_Rear.setAutoRepeat(True)
@@ -424,7 +424,7 @@ class Ui_MainWindow(object):
         self.pushButton_Front.setSizePolicy(sizePolicy)
         self.pushButton_Front.setStyleSheet(u"background-color: rgb(85, 255, 255);")
         icon1 = QIcon()
-        icon1.addFile(u":/Medical/Picture/Arrow Leftt45.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon1.addFile(u":/Medical/Picture/Arrow Leftt45.png", QSize(), QIcon.Normal, QIcon.Off)
         self.pushButton_Front.setIcon(icon1)
         self.pushButton_Front.setIconSize(QSize(80, 80))
         self.pushButton_Front.setAutoRepeat(True)
@@ -527,7 +527,7 @@ class Ui_MainWindow(object):
         self.pushButton_FrontRear2.setSizePolicy(sizePolicy5)
         self.pushButton_FrontRear2.setStyleSheet(u"background-color: rgb(85, 255, 255);")
         icon2 = QIcon()
-        icon2.addFile(u":/Medical/Picture/Arrow Double.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon2.addFile(u":/Medical/Picture/Arrow Double.png", QSize(), QIcon.Normal, QIcon.Off)
         self.pushButton_FrontRear2.setIcon(icon2)
         self.pushButton_FrontRear2.setIconSize(QSize(70, 70))
 
@@ -628,7 +628,7 @@ class Ui_MainWindow(object):
         sizePolicy4.setHeightForWidth(self.pushButton_Up.sizePolicy().hasHeightForWidth())
         self.pushButton_Up.setSizePolicy(sizePolicy4)
         icon3 = QIcon()
-        icon3.addFile(u":/Medical/Picture/up arrow.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon3.addFile(u":/Medical/Picture/up arrow.png", QSize(), QIcon.Normal, QIcon.Off)
         self.pushButton_Up.setIcon(icon3)
         self.pushButton_Up.setIconSize(QSize(80, 80))
         self.pushButton_Up.setAutoRepeat(True)
@@ -641,7 +641,7 @@ class Ui_MainWindow(object):
         sizePolicy4.setHeightForWidth(self.pushButton_Down.sizePolicy().hasHeightForWidth())
         self.pushButton_Down.setSizePolicy(sizePolicy4)
         icon4 = QIcon()
-        icon4.addFile(u":/Medical/Picture/down arrow.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon4.addFile(u":/Medical/Picture/down arrow.png", QSize(), QIcon.Normal, QIcon.Off)
         self.pushButton_Down.setIcon(icon4)
         self.pushButton_Down.setIconSize(QSize(80, 80))
         self.pushButton_Down.setAutoRepeat(True)
@@ -730,7 +730,7 @@ class Ui_MainWindow(object):
         self.pushButton_UpDown1.setSizePolicy(sizePolicy5)
         self.pushButton_UpDown1.setStyleSheet(u"")
         icon5 = QIcon()
-        icon5.addFile(u":/Medical/Picture/arrow up down.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon5.addFile(u":/Medical/Picture/arrow up down.png", QSize(), QIcon.Normal, QIcon.Off)
         self.pushButton_UpDown1.setIcon(icon5)
         self.pushButton_UpDown1.setIconSize(QSize(70, 70))
 
@@ -788,7 +788,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.tabWidget_Main.setCurrentIndex(1)
+        self.tabWidget_Main.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -800,13 +800,13 @@ class Ui_MainWindow(object):
         self.pushButton_Process1.setText(QCoreApplication.translate("MainWindow", u"Process-1", None))
         self.pushButton_Process2.setText(QCoreApplication.translate("MainWindow", u"Process-2", None))
         self.label_LoadLable1.setText(QCoreApplication.translate("MainWindow", u"\u91cd\u91cf1", None))
-        self.progressBar1.setFormat(QCoreApplication.translate("MainWindow", u"%pg", None))
+        self.progressBar1.setFormat(QCoreApplication.translate("MainWindow", u"%vg", None))
         self.label_LoadLable2.setText(QCoreApplication.translate("MainWindow", u"\u91cd\u91cf2", None))
-        self.progressBar2.setFormat(QCoreApplication.translate("MainWindow", u"%pg", None))
+        self.progressBar2.setFormat(QCoreApplication.translate("MainWindow", u"%vg", None))
         self.label_LoadLable3.setText(QCoreApplication.translate("MainWindow", u"\u91cd\u91cf3", None))
-        self.progressBar3.setFormat(QCoreApplication.translate("MainWindow", u"%pg", None))
+        self.progressBar3.setFormat(QCoreApplication.translate("MainWindow", u"%vg", None))
         self.label_LoadLable4.setText(QCoreApplication.translate("MainWindow", u"\u91cd\u91cf4", None))
-        self.progressBar4.setFormat(QCoreApplication.translate("MainWindow", u"%pg", None))
+        self.progressBar4.setFormat(QCoreApplication.translate("MainWindow", u"%vg", None))
         self.label_UpDownValue1.setText(QCoreApplication.translate("MainWindow", u"000", None))
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"mm", None))
         self.label_3.setText("")
