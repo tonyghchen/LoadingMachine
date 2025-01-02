@@ -221,14 +221,25 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
     # ----------------------------------------------------------------------
     def fRun_PWRSwitch(self):
 
-        self.gdicParaData["Power"] = self.gdicParaData.get("Power", 0) + 1
+        sender = self.sender()  # Get the button that emitted the signal
 
-        if  self.gdicParaData["Power"] >= 3:
-            self.gdicParaData["Power"] = 0
+        if  sender is not None:
+            objName = sender.objectName()
 
-        self.fDisplay_PWR(self.gdicParaData["Power"])
+            if  objName == "pushButton_PowerUpDown":
+                self.gdicParaData["PowerUpDown"] = self.gdicParaData.get("PowerUpDown", 0) + 1
 
-        my_print("PWR Switch:",self.gdicParaData["Power"])
+                if  self.gdicParaData["PowerUpDown"] >= 3:
+                    self.gdicParaData["PowerUpDown"] = 0
+                self.fDisplay_PWR("UpDown", self.gdicParaData["PowerUpDown"])
+
+            else:
+                self.gdicParaData["PowerFrontRear"] = self.gdicParaData.get("PowerFrontRear", 0) + 1
+
+                if  self.gdicParaData["PowerFrontRear"] >= 3:
+                    self.gdicParaData["PowerFrontRear"] = 0
+
+                self.fDisplay_PWR("FrontRear",self.gdicParaData["PowerFrontRear"])
 
    # ----------------------------------------------------------------------
     # Power level switch
@@ -236,7 +247,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
     # Input : None
     # Return: None
     # ----------------------------------------------------------------------
-    def fDisplay_PWR(self, liPower):
+    def fDisplay_PWR(self, lsType , liPower):
 
         lsPWR = ""
         if  liPower == 1:
@@ -246,8 +257,12 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         else:
             lsPWR = "x1"
 
-        self.pushButton_Power.setText(lsPWR)
-        my_print("PWR Switch")
+        if  lsType == "UpDown":
+            self.pushButton_PowerUpDown.setText(lsPWR)
+        else:
+            self.pushButton_PowerFrontRear.setText(lsPWR)
+
+        my_print("PWR Switch:",lsType ,",Power:",lsPWR)
 
    # ----------------------------------------------------------------------
     # Reset Processs
@@ -285,7 +300,31 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
     def fRun_Set(self):
 
         sender = self.sender()  # Get the button that emitted the signal
-        objName = sender.objectName()
+
+        if  sender is not None:
+            objName = sender.objectName()
+            #try:
+            #  Front Rear
+            if objName == "pushButton_FRSet1" :       # FrontRear Set
+                self.gdicParaData["ValueFrontRear1"] = int(self.label_FrontRearValue1.text())
+                self.label_FrontRear1.setText(str(self.gdicParaData["ValueFrontRear1"]))
+            elif objName == "pushButton_FRSet2" :       # FrontRear Set
+                self.gdicParaData["ValueFrontRear2"] = int(self.label_FrontRearValue1.text())
+                self.label_FrontRear2.setText(str(self.gdicParaData["ValueFrontRear2"]))
+            
+            # Up Down
+            elif objName == "pushButton_Updown1" :       # FrontRear Set
+                self.gdicParaData["ValueUpDown1"] = int(self.label_UpDownValue1.text())
+                self.label_Updown1.setText(str(self.gdicParaData["ValueUpDown1"]))
+
+            elif objName == "pushButton_Updown2" :       # FrontRear Set
+                self.gdicParaData["ValueUpDown2"] = int(self.label_UpDownValue1.text())
+                self.label_Updown2.setText(str(self.gdicParaData["ValueUpDown2"]))
+              
+            #except ValueError:
+            #    my_print("轉換錯誤")
+
+        self.fFile_SaveParamter()
 
         my_print("ObjName:", objName)
 
@@ -312,9 +351,18 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         if  self.gfProcessSwitch == "Process2":
             self.pushButton_Process1.setStyleSheet("background-color: white;")
             self.pushButton_Process2.setStyleSheet("background-color: #55FFFF;")
+            # Running GIF 
+            self.movie = QMovie(":/Movie/gif/Process12.gif")          
+
         else:
             self.pushButton_Process1.setStyleSheet("background-color: #55FFFF;")
             self.pushButton_Process2.setStyleSheet("background-color: white;")
+
+            # Running GIF 
+            self.movie = QMovie(":/Movie/gif/Process1.gif")          
+
+        self.label_GIF.setMovie(self.movie)
+        self.movie.start()
 
     # ----------------------------------------------------------------------
     # Set Process
@@ -329,19 +377,24 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
 
         my_print("ObjName:", objName)
 
-        if self.gdicParaData["Power"] > 3:
-            self.gdicParaData["Power"] = 2
-        
-        liPower = 10 ** self.gdicParaData["Power"]
-
         # Up Down
         if objName in ["pushButton_Up", "pushButton_Down"]:
+            if self.gdicParaData["PowerUpDown"] > 3:
+                self.gdicParaData["PowerUpDown"] = 2
+            
+            liPower = 10 ** self.gdicParaData["PowerUpDown"]
+
             if objName == "pushButton_Up":
                 self.gdicPosData["UpDown"] = self.fRun_UpDownValueDisplay(self.gdicPosData["UpDown"]+liPower)
             else:
                 self.gdicPosData["UpDown"] = self.fRun_UpDownValueDisplay(self.gdicPosData["UpDown"]-liPower)
         # Front Rear
         else:
+            if self.gdicParaData["PowerFrontRear"] > 3:
+                self.gdicParaData["PowerFrontRear"] = 2
+            
+            liPower = 10 ** self.gdicParaData["PowerFrontRear"]
+
             if objName == "pushButton_Front":
                 self.gdicPosData["FR"] = self.fRun_FRValueDisplay(self.gdicPosData["FR"]-liPower)
             else:
@@ -355,7 +408,8 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         elif value < 0:
             value = 0
 
-        self.label_FRValue.setText(str(value))
+        self.label_FrontRearValue1.setText(str(value))
+        self.label_FrontRearValue2.setText(str(value))
         return value
 
 
@@ -366,7 +420,8 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         elif value < 0:
             value = 0
 
-        self.label_UpDownValue.setText(str(value))
+        self.label_UpDownValue1.setText(str(value))
+        self.label_UpDownValue2.setText(str(value))
         return value
 
     # ----------------------------------------------------------------------
@@ -516,8 +571,8 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.label_LoadLable3.setText(self.Language.GetText("Load")+"-3")
         self.label_LoadLable4.setText(self.Language.GetText("Load")+"-4")
 
-        self.pushButton_Reset.setText(self.Language.GetText("RESET"))
-        self.pushButton_Zero.setText(self.Language.GetText("ZERO"))
+        self.pushButton_HomeUpDown.setText(self.Language.GetText("Home"))
+        self.pushButton_HomeFrontRear.setText(self.Language.GetText("Home"))
 
         # 程序按鍵
         self.pushButton_Process1.setText(self.Language.GetText("Process")+" 1->2")
@@ -564,9 +619,10 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.Init_Keyinterrupt()
 
         # Push Button Process
-        self.pushButton_Power.clicked.connect(self.fRun_PWRSwitch)
-        self.pushButton_Reset.clicked.connect(self.fRun_Reset)
-        self.pushButton_Zero.clicked.connect(self.fRun_Zero)
+        self.pushButton_PowerFrontRear.clicked.connect(self.fRun_PWRSwitch)
+        self.pushButton_PowerUpDown.clicked.connect(self.fRun_PWRSwitch)
+        self.pushButton_HomeFrontRear.clicked.connect(self.fRun_Zero)
+        self.pushButton_HomeUpDown.clicked.connect(self.fRun_Zero)
 
         # Updown, Front Rear Setup
         self.pushButton_Updown1.clicked.connect(self.fRun_Set)
@@ -622,17 +678,18 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
     # ----------------------------------------------------------------------
     def fAll_initUI(self):
 
-        self.fDisplay_PWR(self.gdicParaData["Power"])
-        self.fAll_LanguageDisplay(self.gdicParaData["Language"])
+        self.fDisplay_PWR("UpDown", self.gdicParaData["PowerUpDown"])
+        self.fDisplay_PWR("FrontRear", self.gdicParaData["PowerFrontRear"])
 
+        self.fAll_LanguageDisplay(self.gdicParaData["Language"])
         self.fRun_UpDownValueDisplay(self.gdicPosData["UpDown"])
         self.fRun_FRValueDisplay(self.gdicPosData["FR"])
 
-
-        # Running GIF 
-        self.movie = QMovie(":/Movie/gif/Process2-unscreen.gif")          
-        self.label_GIF.setMovie(self.movie)
-        self.movie.start()
+        # Vaule display update
+        self.label_FrontRear1.setText(str(self.gdicParaData["ValueFrontRear1"]))
+        self.label_FrontRear2.setText(str(self.gdicParaData["ValueFrontRear2"]))           
+        self.label_Updown1.setText(str(self.gdicParaData["ValueUpDown1"]))
+        self.label_Updown2.setText(str(self.gdicParaData["ValueUpDown2"]))
 
         self.fRun_ProcessSwitch()
 

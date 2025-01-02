@@ -109,8 +109,10 @@
     <file>Picture/PhotoAdd.png</file>
   </qresource>
   <qresource prefix="Movie">
-    <file>gif/Process2-unscreen.gif</file>
+    <file>gif/Process1.gif</file>
+    <file>gif/Process2.gif</file>
     <file>gif/Timer.gif</file>
+    <file>gif/Process12.gif</file>
   </qresource>
   <qresource prefix="Style">
     <file>qss/style_main.qss</file>

@@ -46,6 +46,8 @@ ArrLanguage = {
     "RESET"         :["RESET"       ,"重置"         ,"重置"        ,"RESET"             ],
 
     "ZERO"          :["RETURN"      ,"歸零"         ,"归零"        ,"RETURN"     ],
+    "Home"          :["HOME"        ,"歸位"         ,"归位"        ,"HOME"     ],
+
     "START"         :["START"       ,"起始"         ,"起始"        ,"START"],
     "Load"          :["Load"        ,"負載"         ,"负载"        ,"Load"],
     "Process"       :["Process"     ,"程序"         ,"程序"        ,"Process"             ],

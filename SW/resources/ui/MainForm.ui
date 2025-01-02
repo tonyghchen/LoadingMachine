@@ -76,6 +76,18 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="QTabWidget" name="tabWidget_Main">
       <property name="sizePolicy">
@@ -143,7 +155,10 @@
               <string/>
              </property>
              <property name="pixmap">
-              <pixmap resource="../Image.qrc">:/Movie/gif/Process2-unscreen.gif</pixmap>
+              <pixmap resource="../Image.qrc">:/Movie/gif/Process12.gif</pixmap>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
              </property>
             </widget>
            </item>
@@ -435,7 +450,7 @@
                  <number>0</number>
                 </property>
                 <item row="1" column="0">
-                 <widget class="QLabel" name="label_UpDownValue">
+                 <widget class="QLabel" name="label_UpDownValue1">
                   <property name="font">
                    <font>
                     <family>微軟正黑體</family>
@@ -527,7 +542,7 @@
                  </widget>
                 </item>
                 <item row="1" column="0">
-                 <widget class="QLabel" name="label_FRValue">
+                 <widget class="QLabel" name="label_FrontRearValue1">
                   <property name="font">
                    <font>
                     <family>微軟正黑體</family>
@@ -579,10 +594,10 @@
        <widget class="QWidget" name="gridLayoutWidget">
         <property name="geometry">
          <rect>
-          <x>0</x>
+          <x>7</x>
           <y>70</y>
-          <width>1011</width>
-          <height>331</height>
+          <width>1001</width>
+          <height>301</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
@@ -592,18 +607,76 @@
          <property name="spacing">
           <number>1</number>
          </property>
-         <item row="3" column="2">
-          <widget class="QFrame" name="horizontalFrame_2Value">
+         <item row="2" column="3">
+          <widget class="QPushButton" name="pushButton_Updown2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>180</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>微軟正黑體</family>
+             <pointsize>30</pointsize>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string>設定</string>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>60</width>
+             <height>60</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" rowspan="2">
+          <widget class="QLabel" name="label_1Label">
+           <property name="font">
+            <font>
+             <family>微軟正黑體</family>
+             <pointsize>30</pointsize>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="frameShape">
             <enum>QFrame::Panel</enum>
            </property>
            <property name="frameShadow">
             <enum>QFrame::Raised</enum>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_13">
-            <property name="spacing">
-             <number>0</number>
-            </property>
+           <property name="text">
+            <string>1</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="2">
+          <widget class="QFrame" name="horizontalFrame_2ValueUpDown">
+           <property name="frameShape">
+            <enum>QFrame::Panel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+           <property name="lineWidth">
+            <number>1</number>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_7">
             <property name="leftMargin">
              <number>0</number>
             </property>
@@ -616,8 +689,43 @@
             <property name="bottomMargin">
              <number>0</number>
             </property>
-            <item>
-             <widget class="QLabel" name="label_Updown2">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <item row="0" column="1">
+             <widget class="QLabel" name="label_FR2mm">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>50</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Microsoft JhengHei UI</family>
+                <pointsize>16</pointsize>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">background-color: rgb(85, 255, 255);</string>
+              </property>
+              <property name="text">
+               <string>mm</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_FrontRear2">
               <property name="minimumSize">
                <size>
                 <width>200</width>
@@ -631,6 +739,9 @@
                 <bold>true</bold>
                </font>
               </property>
+              <property name="styleSheet">
+               <string notr="true">background-color: rgb(85, 255, 255);</string>
+              </property>
               <property name="text">
                <string>999</string>
               </property>
@@ -639,30 +750,172 @@
               </property>
              </widget>
             </item>
-            <item>
-             <widget class="QLabel" name="label_2mm">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>50</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>mm</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
-              </property>
-             </widget>
-            </item>
            </layout>
           </widget>
+         </item>
+         <item row="3" column="5">
+          <widget class="QPushButton" name="pushButton_HomeFrontRear">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>70</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>微軟正黑體</family>
+             <pointsize>22</pointsize>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(85, 255, 255);</string>
+           </property>
+           <property name="text">
+            <string>歸位</string>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>60</width>
+             <height>60</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0" rowspan="2">
+          <widget class="QLabel" name="label_2Label">
+           <property name="font">
+            <font>
+             <family>微軟正黑體</family>
+             <pointsize>30</pointsize>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::Panel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+           <property name="text">
+            <string>2</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="5">
+          <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="0,0,0">
+           <property name="spacing">
+            <number>1</number>
+           </property>
+           <item>
+            <widget class="QPushButton" name="pushButton_Rear">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(85, 255, 255);</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../Image.qrc">
+               <normaloff>:/Medical/Picture/Arrow Right45.png</normaloff>:/Medical/Picture/Arrow Right45.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>80</width>
+               <height>80</height>
+              </size>
+             </property>
+             <property name="autoRepeat">
+              <bool>true</bool>
+             </property>
+             <property name="autoRepeatInterval">
+              <number>50</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_Front">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(85, 255, 255);</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../Image.qrc">
+               <normaloff>:/Medical/Picture/Arrow Leftt45.png</normaloff>:/Medical/Picture/Arrow Leftt45.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>80</width>
+               <height>80</height>
+              </size>
+             </property>
+             <property name="autoRepeat">
+              <bool>true</bool>
+             </property>
+             <property name="autoRepeatInterval">
+              <number>50</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_PowerFrontRear">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>微軟正黑體</family>
+               <pointsize>24</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(85, 255, 255);</string>
+             </property>
+             <property name="text">
+              <string>X1</string>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>80</width>
+               <height>80</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
          <item row="0" column="2">
           <widget class="QFrame" name="horizontalFrame_1Value">
@@ -736,320 +989,7 @@
            </layout>
           </widget>
          </item>
-         <item row="3" column="5">
-          <widget class="QPushButton" name="pushButton_Power">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>120</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>微軟正黑體</family>
-             <pointsize>30</pointsize>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>X1</string>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>80</width>
-             <height>80</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="3">
-          <widget class="QPushButton" name="pushButton_Updown1">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>180</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>微軟正黑體</family>
-             <pointsize>30</pointsize>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">color: rgb(255, 0, 0);</string>
-           </property>
-           <property name="text">
-            <string>設定</string>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>60</width>
-             <height>60</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="2">
-          <widget class="QFrame" name="horizontalFrame_2ValueUpDown">
-           <property name="frameShape">
-            <enum>QFrame::Panel</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
-           </property>
-           <property name="lineWidth">
-            <number>1</number>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_7">
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <property name="spacing">
-             <number>0</number>
-            </property>
-            <item row="0" column="1">
-             <widget class="QLabel" name="label_FR2mm">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>50</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>16</pointsize>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">background-color: rgb(85, 255, 255);</string>
-              </property>
-              <property name="text">
-               <string>mm</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_FR2Value">
-              <property name="minimumSize">
-               <size>
-                <width>200</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <family>微軟正黑體</family>
-                <pointsize>36</pointsize>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">background-color: rgb(85, 255, 255);</string>
-              </property>
-              <property name="text">
-               <string>999</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item row="0" column="4" rowspan="3" colspan="2">
-          <layout class="QHBoxLayout" name="horizontalLayout_6">
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QFrame" name="gridFrame_UpDownValue_2">
-             <property name="frameShape">
-              <enum>QFrame::Panel</enum>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_5">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <property name="spacing">
-               <number>0</number>
-              </property>
-              <item row="1" column="1">
-               <widget class="QLabel" name="label_10">
-                <property name="maximumSize">
-                 <size>
-                  <width>50</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>mm</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_UpDownValue_2">
-                <property name="font">
-                 <font>
-                  <family>微軟正黑體</family>
-                  <pointsize>36</pointsize>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>000</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0" colspan="2">
-               <widget class="QLabel" name="label_4">
-                <property name="frameShape">
-                 <enum>QFrame::Panel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="pixmap">
-                 <pixmap resource="../Image.qrc">:/Medical/Picture/arrow up down1.png</pixmap>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <widget class="QFrame" name="gridFrame_FRValue_2">
-             <property name="frameShape">
-              <enum>QFrame::Panel</enum>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_9">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <property name="spacing">
-               <number>0</number>
-              </property>
-              <item row="1" column="1">
-               <widget class="QLabel" name="label_8">
-                <property name="maximumSize">
-                 <size>
-                  <width>50</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>mm</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_FRValue_3">
-                <property name="font">
-                 <font>
-                  <family>微軟正黑體</family>
-                  <pointsize>36</pointsize>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>000</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0" colspan="2">
-               <widget class="QLabel" name="label_11">
-                <property name="frameShape">
-                 <enum>QFrame::Panel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="pixmap">
-                 <pixmap resource="../Image.qrc">:/Medical/Picture/Arrow Right Left 45.png</pixmap>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="2" column="2">
+         <item row="1" column="2">
           <widget class="QFrame" name="horizontalFrame_1ValueUpDown">
            <property name="frameShape">
             <enum>QFrame::Panel</enum>
@@ -1074,7 +1014,7 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QLabel" name="label_FR1Value">
+             <widget class="QLabel" name="label_FrontRear1">
               <property name="minimumSize">
                <size>
                 <width>200</width>
@@ -1134,308 +1074,23 @@
            </layout>
           </widget>
          </item>
-         <item row="3" column="1">
-          <widget class="QFrame" name="horizontalFrame2">
-           <property name="frameShape">
-            <enum>QFrame::Panel</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
-            <item>
-             <widget class="QLabel" name="label_2IUpDown">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>60</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="pixmap">
-               <pixmap resource="../Image.qrc">:/Medical/Picture/arrow up down.png</pixmap>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item row="4" column="3">
-          <widget class="QPushButton" name="pushButton_FRSet2">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>180</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>微軟正黑體</family>
-             <pointsize>30</pointsize>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgb(85, 255, 255);
-color: rgb(255, 0, 0);</string>
-           </property>
-           <property name="text">
-            <string>設定</string>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>60</width>
-             <height>60</height>
-            </size>
-           </property>
-          </widget>
-         </item>
          <item row="3" column="4">
-          <widget class="QFrame" name="horizontalFrameDirection">
-           <property name="frameShape">
-            <enum>QFrame::Panel</enum>
-           </property>
-           <property name="lineWidth">
-            <number>1</number>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0">
-            <property name="spacing">
-             <number>2</number>
-            </property>
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QPushButton" name="pushButton_Up">
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="../Image.qrc">
-                <normaloff>:/Medical/Picture/up arrow.png</normaloff>:/Medical/Picture/up arrow.png</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>80</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="autoRepeat">
-               <bool>true</bool>
-              </property>
-              <property name="autoRepeatInterval">
-               <number>50</number>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButton_Down">
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="../Image.qrc">
-                <normaloff>:/Medical/Picture/down arrow.png</normaloff>:/Medical/Picture/down arrow.png</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>80</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="autoRepeat">
-               <bool>true</bool>
-              </property>
-              <property name="autoRepeatInterval">
-               <number>50</number>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButton_Front">
-              <property name="styleSheet">
-               <string notr="true">background-color: rgb(85, 255, 255);</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="../Image.qrc">
-                <normaloff>:/Medical/Picture/Arrow Leftt45.png</normaloff>:/Medical/Picture/Arrow Leftt45.png</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>80</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="autoRepeat">
-               <bool>true</bool>
-              </property>
-              <property name="autoRepeatInterval">
-               <number>50</number>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButton_Rear">
-              <property name="styleSheet">
-               <string notr="true">background-color: rgb(85, 255, 255);</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="../Image.qrc">
-                <normaloff>:/Medical/Picture/Arrow Right45.png</normaloff>:/Medical/Picture/Arrow Right45.png</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>80</width>
-                <height>80</height>
-               </size>
-              </property>
-              <property name="autoRepeat">
-               <bool>true</bool>
-              </property>
-              <property name="autoRepeatInterval">
-               <number>50</number>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item row="3" column="0" rowspan="2">
-          <widget class="QLabel" name="label_2Label">
-           <property name="font">
-            <font>
-             <family>微軟正黑體</family>
-             <pointsize>30</pointsize>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="frameShape">
-            <enum>QFrame::Panel</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
-           </property>
-           <property name="text">
-            <string>2</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QPushButton" name="pushButton_FR_2">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgb(85, 255, 255);</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../Image.qrc">
-             <normaloff>:/Medical/Picture/Arrow Double.png</normaloff>:/Medical/Picture/Arrow Double.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>70</width>
-             <height>70</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QPushButton" name="pushButton_FR">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgb(85, 255, 255);</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../Image.qrc">
-             <normaloff>:/Medical/Picture/Arrow Double.png</normaloff>:/Medical/Picture/Arrow Double.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>70</width>
-             <height>70</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="3">
-          <widget class="QPushButton" name="pushButton_Updown2">
+          <widget class="QPushButton" name="pushButton_HomeUpDown">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="maximumSize">
-            <size>
-             <width>180</width>
-             <height>16777215</height>
-            </size>
-           </property>
            <property name="font">
             <font>
              <family>微軟正黑體</family>
-             <pointsize>30</pointsize>
+             <pointsize>22</pointsize>
              <bold>true</bold>
             </font>
            </property>
-           <property name="styleSheet">
-            <string notr="true">color: rgb(255, 0, 0);</string>
-           </property>
            <property name="text">
-            <string>設定</string>
+            <string>歸位</string>
            </property>
            <property name="iconSize">
             <size>
@@ -1445,30 +1100,33 @@ color: rgb(255, 0, 0);</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="0" rowspan="3">
-          <widget class="QLabel" name="label_1Label">
-           <property name="font">
-            <font>
-             <family>微軟正黑體</family>
-             <pointsize>30</pointsize>
-             <bold>true</bold>
-            </font>
+         <item row="3" column="1">
+          <widget class="QPushButton" name="pushButton_FrontRear2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
-           <property name="frameShape">
-            <enum>QFrame::Panel</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(85, 255, 255);</string>
            </property>
            <property name="text">
-            <string>1</string>
+            <string/>
            </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
+           <property name="icon">
+            <iconset resource="../Image.qrc">
+             <normaloff>:/Medical/Picture/Arrow Double.png</normaloff>:/Medical/Picture/Arrow Double.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>70</width>
+             <height>70</height>
+            </size>
            </property>
           </widget>
          </item>
-         <item row="2" column="3">
+         <item row="1" column="3">
           <widget class="QPushButton" name="pushButton_FRSet1">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -1504,37 +1162,140 @@ color: rgb(255, 0, 0);</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QFrame" name="horizontalFrame_1">
+         <item row="0" column="3">
+          <widget class="QPushButton" name="pushButton_Updown1">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>180</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>微軟正黑體</family>
+             <pointsize>30</pointsize>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string>設定</string>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>60</width>
+             <height>60</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="4">
+          <widget class="QLabel" name="label_4">
            <property name="frameShape">
             <enum>QFrame::Panel</enum>
            </property>
            <property name="frameShadow">
             <enum>QFrame::Raised</enum>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
-            <item>
-             <widget class="QLabel" name="label_1IUpDown">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="../Image.qrc">:/Medical/Picture/arrow up down1.png</pixmap>
+           </property>
+           <property name="scaledContents">
+            <bool>false</bool>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="5">
+          <widget class="QLabel" name="label_11">
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(85, 255, 255);
+</string>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::Panel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="../Image.qrc">:/Medical/Picture/Arrow Right Left 45.png</pixmap>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="5">
+          <widget class="QFrame" name="gridFrame_UpDownValue_2">
+           <property name="frameShape">
+            <enum>QFrame::Panel</enum>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_5">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <item row="1" column="1">
+             <widget class="QLabel" name="label_10">
               <property name="maximumSize">
                <size>
-                <width>60</width>
+                <width>50</width>
                 <height>16777215</height>
                </size>
               </property>
+              <property name="styleSheet">
+               <string notr="true">background-color: rgb(85, 255, 255);</string>
+              </property>
               <property name="text">
-               <string/>
+               <string>mm</string>
               </property>
-              <property name="pixmap">
-               <pixmap resource="../Image.qrc">:/Medical/Picture/arrow up down.png</pixmap>
+              <property name="alignment">
+               <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
               </property>
-              <property name="scaledContents">
-               <bool>true</bool>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_FrontRearValue2">
+              <property name="font">
+               <font>
+                <family>微軟正黑體</family>
+                <pointsize>36</pointsize>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">background-color: rgb(85, 255, 255);</string>
+              </property>
+              <property name="text">
+               <string>000</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -1544,67 +1305,365 @@ color: rgb(255, 0, 0);</string>
            </layout>
           </widget>
          </item>
-         <item row="4" column="4" colspan="2">
-          <layout class="QHBoxLayout" name="horizontalLayout_10" stretch="2,3">
-           <item>
-            <widget class="QPushButton" name="pushButton_Zero">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <family>微軟正黑體</family>
-               <pointsize>22</pointsize>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>歸零</string>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>60</width>
-               <height>60</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButton_Reset">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>70</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>微軟正黑體</family>
-               <pointsize>22</pointsize>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>重置</string>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>60</width>
-               <height>60</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-          </layout>
+         <item row="3" column="3">
+          <widget class="QPushButton" name="pushButton_FRSet2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>180</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>微軟正黑體</family>
+             <pointsize>30</pointsize>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(85, 255, 255);
+color: rgb(255, 0, 0);</string>
+           </property>
+           <property name="text">
+            <string>設定</string>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>60</width>
+             <height>60</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="4">
+          <widget class="QFrame" name="horizontalFrameDirection">
+           <property name="frameShape">
+            <enum>QFrame::Panel</enum>
+           </property>
+           <property name="lineWidth">
+            <number>1</number>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0">
+            <property name="spacing">
+             <number>1</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="pushButton_Up">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../Image.qrc">
+                <normaloff>:/Medical/Picture/up arrow.png</normaloff>:/Medical/Picture/up arrow.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>80</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="autoRepeat">
+               <bool>true</bool>
+              </property>
+              <property name="autoRepeatInterval">
+               <number>50</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_Down">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../Image.qrc">
+                <normaloff>:/Medical/Picture/down arrow.png</normaloff>:/Medical/Picture/down arrow.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>80</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="autoRepeat">
+               <bool>true</bool>
+              </property>
+              <property name="autoRepeatInterval">
+               <number>50</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_PowerUpDown">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>微軟正黑體</family>
+                <pointsize>24</pointsize>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>X1</string>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>80</width>
+                <height>80</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QFrame" name="horizontalFrame_2Value">
+           <property name="frameShape">
+            <enum>QFrame::Panel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_13">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_Updown2">
+              <property name="minimumSize">
+               <size>
+                <width>200</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>微軟正黑體</family>
+                <pointsize>36</pointsize>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>999</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_2mm">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>50</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>mm</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="1" column="4">
+          <widget class="QFrame" name="gridFrame_FRValue_2">
+           <property name="frameShape">
+            <enum>QFrame::Panel</enum>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_9">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <item row="1" column="1">
+             <widget class="QLabel" name="label_8">
+              <property name="maximumSize">
+               <size>
+                <width>50</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>mm</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_UpDownValue2">
+              <property name="font">
+               <font>
+                <family>微軟正黑體</family>
+                <pointsize>36</pointsize>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>000</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QPushButton" name="pushButton_FrontRear1">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(85, 255, 255);</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../Image.qrc">
+             <normaloff>:/Medical/Picture/Arrow Double.png</normaloff>:/Medical/Picture/Arrow Double.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>70</width>
+             <height>70</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QPushButton" name="pushButton_UpDown1">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../Image.qrc">
+             <normaloff>:/Medical/Picture/arrow up down.png</normaloff>:/Medical/Picture/arrow up down.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>70</width>
+             <height>70</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QPushButton" name="pushButton_UpDown2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../Image.qrc">
+             <normaloff>:/Medical/Picture/arrow up down.png</normaloff>:/Medical/Picture/arrow up down.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>70</width>
+             <height>70</height>
+            </size>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
