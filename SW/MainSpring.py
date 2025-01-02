@@ -9,6 +9,7 @@ import orjson       as json
 import Language     as Language
 import ParamTable   as ParamTable
 import DataFormat   as DataFormat
+import UART         as UART
 
 from functools          import partial
 from PySide6            import QtWidgets, QtGui, QtCore
@@ -65,6 +66,136 @@ def my_print(*args, **kwargs):
 # ----------------------------------------------------------------------
 class MyMainWindow(QMainWindow, Ui_MainWindow): 
 
+    # ===================================================================
+    #       UART  Functions
+    # ===================================================================
+    # -----------------------------------------------------------------
+    # Description:  UART hand shaking initialize
+    # Function:     fUART_handshake
+    # Input:        none
+    # Return:       None
+    # -----------------------------------------------------------------
+    def fUART_handshake(self):
+     
+        my_print("UART initialize hadnshake")
+
+    # ----------------------------------------------------------------------
+    # UART Initial process
+    # Description: UART interrup interval
+    # ----------------------------------------------------------------------  
+    def fUARTInit(self):
+
+        lsHandler = "Handler" 
+        lsDel = "Del"
+        recCmdHandler = {
+            "defUART_rErrorMsg"         : { lsHandler:self.fUARTCmd_rErrorMsg,          lsDel : False },
+            "defUART_rPosition"         : { lsHandler:self.fUARTCmd_rPosition,          lsDel : True  },
+            "defUART_rKeyboard"         : { lsHandler:self.fUARTCmd_rKeyboard,          lsDel : False },
+            "defUART_rCurrProductQty"   : { lsHandler:self.fUARTCmd_rCurrProductQty,    lsDel : False },
+            "defUART_rCurrProductTime"  : { lsHandler:self.fUARTCmd_rCurrProductTime,   lsDel : False },
+            "defUART_rCurrFailQty"      : { lsHandler:self.fUARTCmd_rCurrFailQty,       lsDel : False },
+            "defUART_rOverUnderFlow"    : { lsHandler:self.fUARTCmd_rOverUnderFlow,     lsDel : False },
+            "defUART_VersionNo"         : { lsHandler:self.fUARTCmd_rVersionNo,         lsDel : False }
+            "defUART_VersionNo"         : { lsHandler:self.fUARTCmd_rVersionNo,         lsDel : False }
+        }
+        for Code, Data in recCmdHandler.items():
+            self.UARTCmd.RegisterReceiverCodeHandler(Code, Data[lsHandler], Data[lsDel])
+     # ----------------------------------------------------------------------
+    #  UART Functions
+    # ----------------------------------------------------------------------
+    def fUARTCmd_rErrorMsg(self, receiver_data, lCmd, liCmdReadBytes):
+        lErrorAxis = receiver_data[2]
+        lErrorCode = receiver_data[3]
+        self.fUART_rErrorMsg(lErrorAxis, lErrorCode)         
+        
+    def fUARTCmd_rPosition(self, receiver_data, lCmd, liCmdReadBytes):  
+        # clear sync 
+        self.fClearSyncforSpringAxisUpDown()
+        
+        # defUART_rPosition(0x51),軸號(1),Sign(1)-0:正/1:負, Position(4)
+        my_print("Axis Position Decode")                   
+        if len(receiver_data) >= (liCmdReadBytes+1):
+            # --------------------------------------------------------------------
+            #               檢查重複目標值後刪除 保留最後一筆
+            liAxis  = receiver_data[2]
+            lReverse = ~lCmd & 0xFF  # 反相并确保结果在0-255范围内
+            target_values = [lCmd, lReverse,liAxis]
+            lvalue  = (receiver_data[6] << 24) | (receiver_data[5] << 16) | (receiver_data[4] << 8) | receiver_data[3]
+            # 检查是否存在目标值
+            while len(receiver_data) >= 7:
+                if receiver_data[0: len(target_values)] == target_values:
+                    lvalue  = (receiver_data[6] << 24) | (receiver_data[5] << 16) | (receiver_data[4] << 8) | receiver_data[3]
+                    del receiver_data[0:7] # 刪除找到的值
+                    my_print("-- Find and delete -- ")
+                else:
+                    break  
+            my_print("New UART data:",receiver_data)
+            self.fUART_rPosition(liAxis, lvalue, len(receiver_data))            
+        
+    def fUARTCmd_rKeyboard(self, receiver_data, lCmd, liCmdReadBytes):
+        sKeyData = UART.ArrUART_ReadKeyCode.get(receiver_data[2])
+        if  sKeyData is not None:
+            sKeycode = sKeyData.get("KeyName")
+            my_print("Key swith", self.gfAllKeySW, "Key code:",sKeycode)
+            # 1: Key lock, 2: Switch on, 3: Reset O
+            if self.gfAllKeySW == 1 :    # Key lock skip all key (except Unlock)
+                if  sKeycode !="KeyUnLock" :
+                    my_print("Keylock - All key skip !!!")
+                    sKeycode = ""
+            elif self.gfAllKeySW == 2:
+                if  sKeyData.get("KeySWLock") == 0:
+                    sKeycode = ""
+        # KeyLock 
+        my_print("Key code:",receiver_data[2], "Key:",sKeycode)      # Print key data
+        if  sKeycode == "KeyLock":
+            self.fUART_rKeyboard_KeyLock()
+        elif  sKeycode == "KeyUnLock":
+            self.fUART_rKeyboard_KeyUnLock()
+        # 鍵盤切換(Switch)ON---螢幕岀現"鍵盤切換(",並且不允許任何輸入(PC鍵盤,滑鼠及觸控螢幕),只允許機上操作盒+Y,-Y,+A,-A,AHome
+        elif  sKeycode == "StartProd":       # 回原點 
+            self.fUART_rKeyboard_StartProd()
+        elif  sKeycode == "StopProd":       # 回原點 
+            self.fUART_rKeyboard_StopProd()
+
+
+    def fUARTCmd_rVersionNo(self, receiver_data, lCmd, liCmdReadBytes):
+        lVersion1 =  receiver_data[2]
+        lVersion2 =  receiver_data[3]
+        lVersion3 =  int((receiver_data[5] << 8) | receiver_data[4])
+        lsVersion = str(lVersion1) + "." + str(lVersion2) + "." + str(lVersion3)
+        self.label_VersionSub.setText(lsVersion)
+
+    def fUARTCmd_rCurrProductQty(self, receiver_data, lCmd, liCmdReadBytes):
+        lCurrentQty  = int((receiver_data[5] << 24) | (receiver_data[4] << 16) | (receiver_data[3] << 8) | receiver_data[2])
+        self.fUART_rCurrProductQty(lCurrentQty)           
+        
+    def fUARTCmd_rCurrProductTime(self, receiver_data, lCmd, liCmdReadBytes):        
+        if len(receiver_data) >= (liCmdReadBytes+1):             
+            lCurrentTime  = int((receiver_data[5] << 24) | (receiver_data[4] << 16) | (receiver_data[3] << 8) | receiver_data[2])
+            self.fUART_rCurrProductTime(lCurrentTime)
+        else:
+            my_print("defUART_rCurrProductTime Date Error !!!!!") 
+
+    def fUARTCmd_rCurrFailQty(self, receiver_data, lCmd, liCmdReadBytes):
+        lMissQty  = int(receiver_data[2])
+        self.fUART_rCurrFailQty(lMissQty)
+
+    def fUARTCmd_rOverUnderFlow(self, receiver_data, lCmd, liCmdReadBytes):
+        liAxis = receiver_data[2]
+        lKeyData  = receiver_data[3]	
+        self.fUART_rOverUnderFlow(liAxis, lKeyData)
+               
+    # ----------------------------------------------------------------------
+    # UART interrupt process
+    # Description: UART interrupt interval
+    # ----------------------------------------------------------------------   
+    def fUART_Interval(self):    
+
+        self.UARTCmd.CheckReceiverCmd()
+
+    # ===================================================================
+    #       Key Functions
+    # ===================================================================
     #-------------------------------------------------------------
     # Initialize Windows Key interrupt
     # Description: Key press interrupt procedure
@@ -210,10 +341,10 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
                 self.showFullScreen()       
                 my_print("Exit Full Screen")
 
-   # ----------------------------------------------------------------------
-   #    Tab : Run - Program
-   # ----------------------------------------------------------------------
-   # ----------------------------------------------------------------------
+    # ===================================================================
+    #    Tab : Run - Program
+    # ===================================================================
+    # ----------------------------------------------------------------------
     # Power level switch
     # Description: fRun_PWRSwitch
     # Input : None
@@ -424,9 +555,9 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.label_UpDownValue2.setText(str(value))
         return value
 
-    # ----------------------------------------------------------------------
+    # ===================================================================
     #    File Process
-    # ----------------------------------------------------------------------
+    # ===================================================================
     # Description:     File
     # Function: Get Default Parameter
     # Input:    none
@@ -540,12 +671,15 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         with open(lFilename, "wb") as fileStream:
             fileStream.write(json_bytes)
 
+    # ===================================================================
+    #    Global Generic Functions
+    # ===================================================================
     # ----------------------------------------------------------------------
     # Function : Change Language by iLanguage setting
     # Input : None
     # Return: None
     # ----------------------------------------------------------------------
-    def fLanguage_radioClicked(self, button):
+    def fAll_LanguageRadioClicked(self, button):
         # Get the ID of the selected radioButton
         selected_id = self.buttonGroup.id(button)
         self.Language.SetIndex(selected_id-1)
@@ -605,8 +739,9 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         #self.msg_box_hint.close()
         self.msg_box_hint.hide()
 
-    # ----------------------------------------------------------------------
+    # ===================================================================
     #                       Initialize
+    # ===================================================================
     # ----------------------------------------------------------------------
     # File All Event inialize
     # Description: fAll_InitEvent
@@ -644,7 +779,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.buttonGroup.addButton(self.radioButton_English, 1)
         self.buttonGroup.addButton(self.radioButton_Chinese, 2)
         self.buttonGroup.addButton(self.radioButton_Simplified, 3)
-        self.buttonGroup.buttonClicked.connect(self.fLanguage_radioClicked)
+        self.buttonGroup.buttonClicked.connect(self.fAll_LanguageRadioClicked)
         self.buttonGroup.button(self.gdicParaData["Language"]+1).setChecked(True)
 
         my_print("End of fAll_InitEvent Function")
@@ -669,6 +804,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.gdicPosData["FR"] = 0
 
         self.gfProcessSwitch = "Process12"         # 設定成初始為 Process 1-2
+        self.fUARTInit()
 
     # ----------------------------------------------------------------------
     # Description:  UI initialize
@@ -770,6 +906,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.timer = QTimer()
         self.timer.setTimerType(Qt.PreciseTimer)  # 设置为精确计时器
         self.timer.setInterval(5)
+        self.timer.timeout.connect(self.fUART_Interval)             # UART interval check
         self.timer.timeout.connect(self.fAll_KeyInterval)     # Key interval check
         self.timer.start() 
 

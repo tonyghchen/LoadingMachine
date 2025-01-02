@@ -78,6 +78,8 @@ ArrUART_ReadHeadCode= {
     "defUART_rHandWheel"        : {'HeadCode' : 0x65, 'ReadByte' : 1},  # 簡易手輪0x01:+, 0x02:-
     "defUART_VersionNo"         : {'HeadCode' : 0x66, 'ReadByte' : 4},  # (Byte0).(Byte1).(Byte3-4)
     "defUART_PowerDown"         : {'HeadCode' : 0x67, 'ReadByte' : 0},  # 關機準備中
+
+    "defUART_LoadCellData"      : {'HeadCode' : 0x70, 'ReadByte' : 8},  # Byte0~7 (Byte 0-1 Cell 0/Byte 2-3 Cell 1/Byte 4-5 Cell 2/Byte 6-7 Cell 3)
 }
 
 ArrUART_ReadKeyCode = {
