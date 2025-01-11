@@ -1,0 +1,26 @@
+void cal_pass(void) ;
+bool cal_YYYYMMDD(uint32 &YYYYMMDD);
+bool Verify_PRODPASS(uint32 prodpass) ;
+void SET_PASS_SCRN() ;
+void Test_IO_get();
+void Test_input();
+void Test_IO(uint8 keycode);
+uint32 rdYYYYMMDD() ;
+void NSNMody (void) ;
+void EnPassWdMody (void) ;
+void load_PassYear();
+void save_PassYear();
+void load_PassMon();
+void save_PassMon();
+void load_PassDay();
+void save_PassDay();
+void load_NSN();
+void DumpSafeTbl(int c1,int c2,int c3,int c4,int c5,int c6,int c7,int c8);
+void DumpDDATbl(int e);
+
+void DumpSafeTblR(int c1,int c2,int c3,int c4,int c5,int c6,int c7,int c8);
+void save_NSN();
+void load_EnPassWd();
+void save_EnPassWd();
+void UpdatePassDate() ;
+void SetNewPassDate() ;

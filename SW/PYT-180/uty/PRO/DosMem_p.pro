@@ -1,0 +1,13 @@
+void new_base(unsigned tbase) ;
+void wDosMem(unsigned addr , uint8 data1) ;
+void wDosMem(unsigned addr , uint16 data1) ;
+void wDosMem(unsigned addr , uint32 data1) ;
+void wDosMem_base(unsigned off , uint8 data1) ;
+void wDosMem_pc_base(unsigned off , uint8 data1) ;
+uint8 rDosMem(unsigned addr) ;
+uint8 rDosMem_base(unsigned off) ;
+uint8 rDosMem_pc_base(unsigned off) ;
+uint16 rDosMemw(unsigned addr) ;
+uint32 rDosMeml(unsigned addr) ;
+void OUTB2ARM(unsigned addr , uint8 val) ;
+void OUTL2ARM(unsigned  addr , uint32 val) ;
