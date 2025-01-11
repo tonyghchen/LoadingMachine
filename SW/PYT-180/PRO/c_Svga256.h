@@ -1,0 +1,9 @@
+//#include <graphics.h>
+enum {
+	SVGA320x200x256=0 ,
+	SVGA640x400x256=1 ,
+	SVGA640x480x256=2 ,
+	SVGA800x600x256=3 ,
+	SVGA1024x768x256=4 ,
+} ;
+

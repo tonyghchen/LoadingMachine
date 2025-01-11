@@ -1,0 +1,12 @@
+uint8 RD_PC_CMD(BYTE card) ;
+uint8 RD_ARM_CMD(BYTE card) ;
+bool FILL_PC_CMD(BYTE cmd);
+bool FILL_PC_CMD(BYTE cmd,bool *CardStatus);
+bool FILL_PC_CMD(BYTE cmd,uint8 card);
+bool FILL_PC_CMD_CHK_ARM_CMD(BYTE cmd,BYTE card) ;
+bool FILL_PC_CMD_CHK_ARM_CMD(BYTE cmd,bool *CardStatus) ;
+bool CHK_ARM_CMD(BYTE cmd,BYTE card) ;
+bool CHK_ARM_CMD(BYTE cmd,bool *CardStatus) ;
+bool CHK_ARM_CMD(BYTE cmd) ;
+bool CHK_PC_CMD(BYTE cmd) ;
+bool FILL_PC_CMD_CHK_ARM_CMD(BYTE cmd) ;
