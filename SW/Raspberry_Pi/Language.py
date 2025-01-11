@@ -50,7 +50,17 @@ ArrLanguage = {
 
     "START"         :["START"       ,"起始"         ,"起始"        ,"START"],
     "Load"          :["Load"        ,"負載"         ,"负载"        ,"Load"],
-    "Process"       :["Process"     ,"程序"         ,"程序"        ,"Process"             ],
+    "Process"       :["Process"     ,"程序"         ,"程序"        ,"Process" ],
+    "g"             :["g"           ,"公克"         ,"公克"        ,"g" ],
+    "Error"         :[ "Error!! "   ,"錯誤!! "      ,"错误!! "     ,"Error!! " ],
+    "Range"         :[ "Range"      ,"範圍"         ,"范围"         ,"Range" ],
+    "AXIS"          :["Axis"        ,"軸"           ,"轴"           ,"Axis"],
+
+    "OutOfRange"     :[ "Out Of Range ",
+                        "超出範圍 ",
+                        "超出范围 ",
+                        "Out Of Range "
+                        ],
 
     "File_Open_Error"   :[ "File Open Error !!!",
                         "檔案開啟錯誤 !!!",
