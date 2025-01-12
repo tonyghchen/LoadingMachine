@@ -10,6 +10,7 @@ import Language     as Language
 import ParamTable   as ParamTable
 import DataFormat   as DataFormat
 import UART         as UART
+import math
 import ctypes
 
 from functools          import partial
@@ -109,6 +110,8 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
        
     def fUARTCmd_rPosition(self, receiver_data, lCmd, liCmdReadBytes):  
        
+        self.fClearSyncforSpringAxisUpDown()
+
         # defUART_rPosition(0x51),軸號(1),Sign(1)-0:正/1:負, Position(4)
         my_print("Axis Position Decode")                   
         if len(receiver_data) >= (liCmdReadBytes+1):
@@ -197,20 +200,70 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.fUART_rOverUnderFlow(liAxis, lKeyData)
 
     # ----------------------------------------------------------------------
-    # Function: fAll_AxisMapping 
-    # Description: Axis Mapping by mapping table
-    # Input : \
+    # Function: fUART_ManualUpDownSendProvider 
+    # Description: UART Axis send out Provider
+    # Input : 軸號 , Sign(0:加/1:減), Byt 0~2(PHY), Byt 0~3(Logi) 補數
     # Return: None
     # ----------------------------------------------------------------------
-    def fAll_PHYAxisToLOGI(self, liAxisNo):
+    def fUART_ManualUpDownSendProvider(self, lsAxis, lUpDown, lPHYData, lLogiData):
 
-        for lsAxis, lData in ParamTable.ArrPara_PHYAxisMapping.items():
-            if  liAxisNo == 0:        # OFF Axis Mode
-                return ("")
-            elif liAxisNo == lData :
-                return lsAxis
+        headCodeFormat = UART.ArrUART_WriteHeadCode.get("defUART_wManualUpDown")
 
-        return ("")
+        #liAxis = EditTable.ArrAxisMapping[lsAxis]     # Axia Table mapping
+        newAxis = "AxisMapping" + lsAxis
+        liAxis = self.gdicParaData.get(newAxis, 0)      # 避免軸對應輸入超過
+
+        if liAxis == 0 :
+            return
+
+        my_print("lsAxis:",lsAxis, "lAxis:",liAxis)
+       
+        lfrw = 0
+        #lLogiData = abs(lLogiData)
+        BfrwConverter = lfrw.to_bytes(4, 'little',signed=True)       # Negative + 4 Byte converter
+        BPHYConverter = lPHYData.to_bytes(4, 'little',signed=True)       # Negative + 4 Byte converter
+        BLogConverter = lLogiData.to_bytes(4, 'little', signed=True)
+
+        # defUART_wManualUpDown Axis(1), up/down(1),step_frw(4), step(4),curr_pos(4)
+        liData = bytes([headCodeFormat['HeadCode'], liAxis, lUpDown, BfrwConverter[0] , BfrwConverter[1] ,BfrwConverter[2] , BfrwConverter[3] ,\
+                        BPHYConverter[0], BPHYConverter[1], BPHYConverter[2], BPHYConverter[3], \
+                        BLogConverter[0], BLogConverter[1], BLogConverter[2], BLogConverter[3]])
+        self.UARTCmd.Send(liData)
+        liSimulator = False
+
+        if (os.name !='posix'or liSimulator == True):
+            if (headCodeFormat['HeadCode'] == 0xC0):
+                 liCmd = [0x51, 0xAE, liAxis, BLogConverter[0], BLogConverter[1], BLogConverter[2], BLogConverter[3] ]
+                 self.UARTCmd.AddReceiverBuf(liCmd)        
+
+    # ----------------------------------------------------------------------
+    # fUART_rKeyboard_ResetON
+    # Description:  ResetON
+    # Input : 
+    # Return: None
+    # ----------------------------------------------------------------------
+    def fUART_rKeyboard_ResetON(self):					
+
+        global  gUART_Received_data
+
+        self.fShow_DialogAllClose()                  # All Dialog window close
+        self.UARTCmd.SendProvider('defUART_wReset')    # send         
+        ErrorMsg = self.Language.GetText("ResetON")
+        self.fShow_PressbarBox(ErrorMsg, 1, "ResetMode")      # 顯示兩秒
+        self.fFile_SaveEditTable()              # 儲存目前所有資料
+        self.fFile_SaveParamter()               # 儲存參數修改資料
+
+        gUART_Received_data = []                # 強制清空UART Buffer  
+        self.fUART_Product_Reset()
+      
+        self.timer.start()                          # 重新启动定时器
+        self.gfTestStartPolling = 0                 # Test Start Notice for 原點回復再開始測試
+        self.gfVRRunMode        = 0
+        self.fProgramTool_Run   = 0 
+        self.giSendPos = 9999  # Reset
+        
+        self.giZRTReceivedPos   = {}
+        self.giTestCnt = 60
 
     # ----------------------------------------------------------------------
     # fUART_rPosition
@@ -220,10 +273,12 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
     # ----------------------------------------------------------------------
     def fUART_rPosition(self, liAxis, lvalue, lUART_Received_Len):
 
-        lsAxisName = self.fAll_PHYAxisToLOGI(int(liAxis))      
+        lsAxisName = ParamTable.ArrPara_PHYAxisMapping(int(liAxis))      
+        my_print("UART rPostion:",liAxis, "lxAxisName:",lsAxisName)
 
         if lsAxisName != "":
-            self.fRun_AxisDisplay(lsAxisName, lvalue)
+            lsLMAxis = ParamTable.ArrPara_PHYAxisMapping(lsAxisName)
+            self.fRun_ValueDisplay(lsLMAxis)
             my_print("----- rPositon --- Axis:",lsAxisName, "Received Pos:",lvalue)
                        
         my_print("End of fUART_rPosition")
@@ -234,7 +289,8 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
     # ----------------------------------------------------------------------   
     def fUART_Interval(self):    
 
-        self.UARTCmd.CheckReceiverCmd()
+        if os.name=='posix': # Raspi Testing
+            self.UARTCmd.CheckReceiverCmd()
 
     # ===================================================================
     #       Key Functions
@@ -323,6 +379,25 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
                 self.giKeyInterruptCnt = 0
                 self.gsKeyinData = ""       
 
+        # -------------------------------------------------------------
+        # Key command process 
+        if  len(self.gsKeyCmdData) > 0:      # Key command buffer 
+
+            try:    # 避免錯誤發生 導致無限迴圈
+                my_print("Key Command Process:",self.gsKeyCmdData)
+                self.fAll_KeyCmdProcess()
+
+            except Exception as e:
+                my_print(f"An error occurred: {e}")
+
+    def fClearSyncforSpringAxisUpDown(self):
+       
+       if (len(self.gsKeyCmdData) > 0):
+            sKeyCmdcode = self.gsKeyCmdData[0]
+            state       = sKeyCmdcode.get("State")
+            if (state == 1):
+                self.gsKeyCmdData = []
+
     # ----------------------------------------------------------------------
     # Function      : Key in decode
     # Description   : Tab Buttom color update
@@ -375,6 +450,80 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
                 my_print("Exit Full Screen")
 
     # ----------------------------------------------------------------------
+    # Function      : fAll_KeyCmdProcess
+    # Description   : Key command Interval process
+    # Input         : None
+    # Return        : None
+    # ----------------------------------------------------------------------
+    def fAll_KeyCmdProcess(self):
+
+        #for sKeyCmdcode in list(self.gsKeyCmdData[:]):  # 這裡使用列表的副本
+        if (len(self.gsKeyCmdData) > 0):
+
+            sKeyCmdcode = self.gsKeyCmdData[0]
+            my_print("KeyCmd Scan Code:", sKeyCmdcode)
+            lsCommand = sKeyCmdcode.get("Command")  # Get command
+
+            # ManualUp, ManualDown
+            if lsCommand in ["ManualUp","ManualDown"]:
+                
+                lfUpdownTrigger = 0
+                if  lsCommand == "ManualUp":        lupdown = 0
+                else:                               lupdown = 1
+
+                my_print("lsCommand Exec",lsCommand )
+                # Get command info
+                lsAxisName  = sKeyCmdcode.get("Axis")
+                lMoveStep   = sKeyCmdcode.get("MoveStep")
+                updownData  = sKeyCmdcode.get("X2Data")
+                oldupdown   = sKeyCmdcode.get("oldupdown")
+                state       = sKeyCmdcode.get("State")
+                
+                # wait sync
+                if os.name == 'posix':#Raspberry
+                    if (state == 1):
+                        return
+
+                # Update Paramter Tab 
+                my_print(" ----------->>> Current Pos:", self.gdicPosData.get(lsAxisName), "OldDown:", oldupdown , "SendPos:", self.giSendPos)
+                #self.gsKeyCmdData.remove(sKeyCmdcode)  # 已處理不再重複
+                if  self.giSendPos == updownData :
+                    my_print("========= Send Pos = updown , Same , skip !!")
+                    self.giSendPos = 9999  # Reset
+                    lfUpdownTrigger = 0 
+                else:
+                    if os.name != 'posix':#Raspberry
+                        self.gdicPosData[lsAxisName] = updownData   # Display position 參照 read rPosition
+
+                    lcurrentPHYStep = self.fDecode_CalPHY_step(lsAxisName,updownData)
+                    lnewPHYStep = self.fDecode_CalPHY_step(lsAxisName,oldupdown)           
+                    lPHYMoveStep = abs(lnewPHYStep -lcurrentPHYStep )
+                    my_print("Axis",lsAxisName, "Move Step:", lPHYMoveStep ," = New Step:",lnewPHYStep ,"-Current Step:", lcurrentPHYStep, "X2 Date:",updownData )
+                    lfUpdownTrigger = 1
+
+                if lfUpdownTrigger == 1:
+                    if self.gsKeyCmdData:
+                        # 如果不为空，檢查第一個元素是否包含 'State' 鍵
+                        if 'State' in self.gsKeyCmdData[0]:
+                            self.gsKeyCmdData[0]['State'] = 1
+                        else:
+                            # 如果沒有 'State' 鍵，初始化 'State' 鍵值
+                            self.gsKeyCmdData[0]['State'] = 1
+                    else:
+                        # 如果 self.gsKeyCmdData 為空列表，初始化並新增字典包含 'State' 鍵
+                        self.gsKeyCmdData.append({'State': 1})
+                    # self.gsKeyCmdData.append({'State': 1})
+                    #self.gsKeyCmdData[0]['State'] = 1
+                    self.giSendPos = int(updownData) 
+                    # 軸號, Up/Down (0:up/1:down)(1), PHY Move Step(3), Step(4)        
+                    self.fUART_ManualUpDownSendProvider(lsAxisName, lupdown, abs(int(lPHYMoveStep)), int(updownData) )
+                    self.fRun_ValueDisplay(lsAxisName)
+                    #self.fSpring_LabelObjUpdate(lsAxisName)
+
+            if os.name != 'posix':# Window Mode
+                self.fClearSyncforSpringAxisUpDown()
+
+    # ----------------------------------------------------------------------
     # Function : fAll_KeyPushProcess
     # Description: Push Button Key Process
     # Input : None
@@ -399,6 +548,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.gfPushButtonPressName = objName
         my_print("Object Button Press:", objName)
 
+
     def fAxisLongPressTimeout(self):
         #手動滑鼠按住"+/-"時 即使離開"+"仍持續是"+/-"功能
         def doKeyPushEvent():
@@ -422,16 +572,16 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         
         if  "Down" in objName:          
             keyupdown = 0       # 0 - Down
-            lsAxisName = "UpDown"
+            lsAxisName = "X2"
         elif "Up"  in objName:          
             keyupdown = 1       # 1 - Up
-            lsAxisName = "UpDown"
+            lsAxisName = "X2"
         elif "Front"  in objName:          
             keyupdown = 1       # 1 - Up
-            lsAxisName = "FrontRear"
+            lsAxisName = "X1"
         elif "Rear"  in objName:          
             keyupdown = 1       # 1 - Up
-            lsAxisName = "FrontRear"
+            lsAxisName = "X1"
 
         return (keyupdown, lsAxisName)
 
@@ -470,18 +620,17 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         updownData  = self.gdicPosData.get(lsAxisName)
         oldupdown   = updownData       
 
-        lMoveStep      = self.gdicParaData.get(lsAxisName+"_Power")
+        lMoveStep      = self.gdicParaData.get("Power"+lsAxisName)
         lsMoveDisplay  = self.fEDIT_UnitFormat(lsAxisName , lMoveStep )
         lsMoveDisplay  = lsMoveDisplay.lstrip('+-')
 
-        maxlimit = self.gdicParaData.get( lsAxisName + "_MaxLimit") 
-        minlimit = self.gdicParaData.get( lsAxisName + "_MinLimit")
+        #  先確認原先就超過
+        maxlimit = self.gdicParaData.get("MaxLimit"+lsAxisName) 
+        minlimit = self.gdicParaData.get("MinLimit"+lsAxisName)
         lsmaxlimit = self.fEDIT_UnitFormat(lsAxisName, maxlimit)
         lsminlimit = self.fEDIT_UnitFormat(lsAxisName, minlimit)
 
-        #  先確認原先就超過
         error_range_text = self.Language.GetErrorMessage("OutOfRange") + "," + self.Language.GetErrorMessage("Range") + "%s~%s" % (lsmaxlimit,lsminlimit)
-
         if  oldupdown > maxlimit or oldupdown < minlimit:
             updownData = minlimit
             self.fAll_Open_messagebox(error_range_text, 1)
@@ -512,21 +661,23 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
                 lsAxisMotorName = self.gdicParaData.get(("MotorName_" + lsAxisName),"") 
                 
             lupdown = 0 if (updownData > oldupdown) else 1    # 0:加/1:減
-            my_print("Limit:", maxlimit if keyupdown == 1 else minlimit, "UpDown data:", updownData, "Move Data:", lMoveStep)
+            my_print("Limit:", maxlimit if keyupdown == 1 else minlimit, "X2 data:", updownData, "Move Data:", lMoveStep)
 
         # Key command process
         if  keyupdown != None:              # 確定按鈕有被按下, 避免連按Lost  
             if (len(self.gsKeyCmdData) == 0):
                 my_print("Axis Up/Down : go")                
                 if  lupdown == 0:       # 0:加/1:減
-                    self.gsKeyCmdData.append({"Command": "ManualUp", "Axis" : lsAxisName , "MoveStep": lMoveStep, "updownData" : updownData , "oldupdown" : oldupdown, "State" : 0 })   
+                    self.gsKeyCmdData.append({"Command": "ManualUp", "Axis" : lsAxisName , "MoveStep": lMoveStep, "X2Data" : updownData , "oldupdown" : oldupdown, "State" : 0 })   
                 else:
-                    self.gsKeyCmdData.append({"Command": "ManualDown", "Axis" : lsAxisName , "MoveStep": lMoveStep, "updownData" : updownData , "oldupdown" : oldupdown, "State" : 0 })   
+                    self.gsKeyCmdData.append({"Command": "ManualDown", "Axis" : lsAxisName , "MoveStep": lMoveStep, "X2Data" : updownData , "oldupdown" : oldupdown, "State" : 0 })   
 
                 lsLogCmd = self.Language.GetText("AXIS") + lsAxisName + self.fEDIT_UnitFormat(lsAxisName ,oldupdown) + self.fEDIT_UnitFormat(lsAxisName ,lMoveStep) + " =" +  self.fEDIT_UnitFormat(lsAxisName ,updownData)
                 self.fLog_AddTable(lsLogCmd) 
             else:
                 my_print("Axis Up/Down : Skip")
+
+        # if os.name =='posix':       # Raspi mode check
 
         my_print("End of fSpring_AxisManualUpDown")
 
@@ -542,6 +693,129 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
 
         sValue = int(float(sValue))
         return  DataFormat.Digs4Dot2_PN_Format.format(sValue/100)       # mm 回復
+
+    # ----------------------------------------------------------------------
+    # Description:  Add Log Table
+    # Function:     fLog_AddTable
+    # Input :       
+    # Return:       None
+    # ----------------------------------------------------------------------
+    def fLog_AddTable(self, action = ""):
+
+        #lsHistoryFile = current_directory + '/' + defHistoryFile
+
+        time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        actData  = {'time': str(time), "action": action}
+
+        # if os.path.exists(lsHistoryFile):
+        #     with open(lsHistoryFile,'r',encoding='utf-8') as fileStream:  # load file to Json file
+        #         jsonData = json.load(fileStream)
+        self.gArractData.insert(0, actData)
+        #self.gArractData.append(actData )
+
+        # with open(lsHistoryFile, 'w', encoding='utf-8') as fileStream:
+        #     json.dump(jsonData, fileStream, indent=2, ensure_ascii=False)
+
+    # ----------------------------------------------------------------------
+    # fShow_DialogAllClose
+    # Description:  ResetON
+    # Input : 
+    # Return: None
+    # ----------------------------------------------------------------------
+    def fShow_DialogAllClose(self):					
+
+        # 關閉已開啟視窗
+        dialogs = [ self.progress_widget]
+
+        for dialog in dialogs:
+            if dialog.isVisible():
+                dialog.close()
+
+    # ----------------------------------------------------------------------
+    #    Progressbar Window , 沙漏顯示動畫 Timer.gif
+    # ----------------------------------------------------------------------
+    def fShow_PressbarBox(self,lMessage, lDisplayCnt = None, lDisplayMode = None):
+
+        self.gsDisplayMode = lDisplayMode
+       
+        if self.msg_box_hint.isVisible():   # 錯誤訊息打開 關閉
+            self.fAll_Close_messagebox()
+
+        if lDisplayCnt:
+            self.giWarningBoxCnt = lDisplayCnt * 20             # x 50 = 1秒
+        else:
+            self.giWarningBoxCnt = 0
+        
+        self.progress.label_Text.setWordWrap(True)
+        self.progress.label_Text.setScaledContents(True)
+        self.progress.label_Text.setAlignment(Qt.AlignCenter)
+        self.progress.label_Text.setText(lMessage)
+        # 设置 QLabel 的自动字体大小调整策略
+
+        if not self.progress_widget.isVisible():
+            #self.progress.movie = QMovie(":/Movie/gif/Timer.gif")                       
+            #self.progress.label_Movie.setMovie(self.progress.movie)
+            self.progress_widget.show()
+            self.progress.movie.start()
+        
+        QApplication.processEvents()  # 强制刷新 UI
+
+    def fShow_PressbarBoxClose(self):
+
+        if self.gfAllKeySW != 2 and self.progress_widget.isVisible() :   # # 1: Key lock, 2: Switch on, 3: Reset On, 鍵盤切換 不關閉
+            self.progress_widget.close()
+            self.progress.movie.stop()
+            self.gsDisplayMode = None
+        else:
+            my_print("ProssBar No close, Key SW:", self.gfAllKeySW)
+
+        self.giSendPos = 9999  # Reset
+
+    # ===================================================================
+    #    Tab : Decode
+    # ===================================================================
+
+    # ---------------------------------------------------------------
+    # Function: fDecode_CalPHY_step
+    # Calculate ms, step from Table data
+    # Input : None
+    # Return: None
+    #----------------------------------------------------------------
+    def fDecode_CalPHY_step(self, lsAxisName, liTblData, Mod = None):
+
+        lstep = 0.0
+        unitCellName = "Unit"+ lsAxisName
+        my_print("fDecode_CalPHY_step input:",lsAxisName, "liTblData", liTblData, "Mod",Mod)
+
+        if (liTblData != "" and liTblData != None) and (self.gdicParaData.get("Gear1"+ lsAxisName, 0 ) > 0):
+            # Data conversiob
+            liTblData = int(liTblData)
+            self.gdicParaData["MotorStep"+ lsAxisName] = int(self.gdicParaData["MotorStep"+ lsAxisName])
+
+            lGearRation = int(self.gdicParaData["Gear0"+ lsAxisName]) / int(self.gdicParaData["Gear1"+ lsAxisName]) 
+            #cellForm = self.fAdvancedParam_GetFormByCellName("ZRTPosition"+lsAxisName)
+            # 0:格數 / 1:角度 / 2:mm / 3:圈數
+            # 0:格數 Digs6_PN / 1:角度 Digs4Dot1_PN / 2:mm Digs4Dot2_PN / 3:圈數 Digs2Dot3_PN
+            if self.gdicParaData[unitCellName] == 0 and (self.gdicParaData.get("MotorLogicalPosition"+ lsAxisName,0) > 0) :    # 格數
+                lstep = (liTblData * self.gdicParaData["MotorStep"+ lsAxisName] * lGearRation) / (self.gdicParaData["MotorLogicalPosition"+ lsAxisName])
+                my_print(" 0:格數 :馬達格數 x 齒輪比 / 邏輯格數 x 差異值=", lstep)
+            elif self.gdicParaData[unitCellName] == 1:  # 角度
+                if Mod == 1:                            # 虛擬原點 找最近圈數
+                    lstep = (((math.fmod(liTblData, 3600)) * self.gdicParaData["MotorStep"+ lsAxisName] ) * lGearRation) / 3600
+                    #lstep = (((liTblData%3600) * self.gdicParaData["MotorStep"+ lsAxisName]) * lGearRation)/3600
+                    #print("ParaData", self.gdicParaData["MotorStep"+ lsAxisName], "Gear Ration",lGearRation)
+                else:                                   # 角度
+                    lstep = ((liTblData * self.gdicParaData["MotorStep"+ lsAxisName]) * lGearRation)/3600
+                my_print("角度 = 馬達格數 x 齒輪比 / 360 x 差異值=", lstep)
+            elif self.gdicParaData[unitCellName] == 2:  # mm
+                my_print("liTblData:",liTblData, ",Data:",self.gdicParaData["UnitExchange"+ lsAxisName])
+                lstep = (liTblData * self.gdicParaData["UnitExchange"+ lsAxisName])/10000  # # 0.01mm
+#                lstep = liTblData * (int(self.gdicParaData["UnitExchange"+ lsAxisName]) )/10/100     # 0.01mm
+                my_print(" mm = 單位換算 x 差異值=", lstep, ",Data:", liTblData, ",UnitExchange:", self.gdicParaData["UnitExchange"+ lsAxisName])
+            elif self.gdicParaData[unitCellName] == 3:  # 圈數
+                lstep = ((liTblData * self.gdicParaData["MotorStep"+ lsAxisName]) * lGearRation)/1000
+                my_print(" 圈數 =  馬達格數 x 齒輪比 x 差異值 =", lstep)
+        return  int(lstep)
 
     # ===================================================================
     #    Tab : Run - Program
@@ -560,24 +834,24 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
             objName = sender.objectName()
 
             if  objName == "pushButton_PowerUpDown":
-                if  self.gdicParaData["UpDown_Power"] == 1:
-                    self.gdicParaData["UpDown_Power"] = 10
-                elif    self.gdicParaData["UpDown_Power"] == 10:
-                    self.gdicParaData["UpDown_Power"] = 100
+                if  self.gdicParaData["PowerX2"] == 1:
+                    self.gdicParaData["PowerX2"] = 10
+                elif    self.gdicParaData["PowerX2"] == 10:
+                    self.gdicParaData["PowerX2"] = 100
                 else:
-                    self.gdicParaData["UpDown_Power"] = 1
+                    self.gdicParaData["PowerX2"] = 1
 
-                self.fDisplay_PWR("UpDown", self.gdicParaData["UpDown_Power"])
+                self.fDisplay_PWR("X2", self.gdicParaData["PowerX2"])
 
             else:
-                if  self.gdicParaData["FrontRear_Power"] == 1:
-                    self.gdicParaData["FrontRear_Power"] = 10
-                elif    self.gdicParaData["FrontRear_Power"] == 10:
-                    self.gdicParaData["FrontRear_Power"] = 100
+                if  self.gdicParaData["PowerX1"] == 1:
+                    self.gdicParaData["PowerX1"] = 10
+                elif    self.gdicParaData["PowerX1"] == 10:
+                    self.gdicParaData["PowerX1"] = 100
                 else:
-                    self.gdicParaData["FrontRear_Power"] = 1
+                    self.gdicParaData["PowerX1"] = 1
 
-                self.fDisplay_PWR("FrontRear",self.gdicParaData["FrontRear_Power"])
+                self.fDisplay_PWR("X1",self.gdicParaData["PowerX1"])
 
    # ----------------------------------------------------------------------
     # Power level switch
@@ -589,7 +863,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
 
         lsPWR = "x" + str(liPower)
 
-        if  lsType == "UpDown":
+        if  lsType == "X2":
             self.pushButton_PowerUpDown.setText(lsPWR)
         else:
             self.pushButton_PowerFrontRear.setText(lsPWR)
@@ -604,11 +878,11 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
     # ----------------------------------------------------------------------
     def fRun_Reset(self):
 
-        self.gdicPosData["UpDown"] = 1
-        self.gdicPosData["FrontRear"] = 1
+        self.gdicPosData["X2"] = 1
+        self.gdicPosData["X1"] = 1
 
-        self.fRun_UpDownValueDisplay(self.gdicPosData["UpDown"])
-        self.fRun_FRValueDisplay(self.gdicPosData["FrontRear"])
+        self.fRun_UpDownValueDisplay(self.gdicPosData["X2"])
+        self.fRun_FRValueDisplay(self.gdicPosData["X1"])
 
         my_print("fRun_Reset")
 
@@ -638,20 +912,20 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
             #try:
             #  Front Rear
             if objName == "pushButton_FRSet1" :       # FrontRear Set
-                self.gdicParaData["FrontRear_Value1"] = int(self.label_FrontRearValue1.text())
-                self.label_FrontRear1.setText(str(self.gdicParaData["FrontRear_Value1"]))
+                self.gdicParaData["Value1X1"] = int(self.label_FrontRearValue1.text())
+                self.label_FrontRear1.setText(str(self.gdicParaData["Value1X1"]))
             elif objName == "pushButton_FRSet2" :       # FrontRear Set
-                self.gdicParaData["FrontRear_Value2"] = int(self.label_FrontRearValue1.text())
-                self.label_FrontRear2.setText(str(self.gdicParaData["FrontRear_Value2"]))
+                self.gdicParaData["Value2X1"] = int(self.label_FrontRearValue1.text())
+                self.label_FrontRear2.setText(str(self.gdicParaData["Value2X1"]))
             
             # Up Down
             elif objName == "pushButton_Updown1" :       # FrontRear Set
-                self.gdicParaData["UpDown_Value1"] = int(self.label_UpDownValue1.text())
-                self.label_Updown1.setText(str(self.gdicParaData["UpDown_Value1"]))
+                self.gdicParaData["Value1X2"] = int(self.label_UpDownValue1.text())
+                self.label_Updown1.setText(str(self.gdicParaData["Value1X2"]))
 
             elif objName == "pushButton_Updown2" :       # FrontRear Set
-                self.gdicParaData["UpDown_Value2"] = int(self.label_UpDownValue1.text())
-                self.label_Updown2.setText(str(self.gdicParaData["UpDown_Value2"]))
+                self.gdicParaData["Value2X2"] = int(self.label_UpDownValue1.text())
+                self.label_Updown2.setText(str(self.gdicParaData["Value2X2"]))
               
             #except ValueError:
             #    my_print("轉換錯誤")
@@ -710,30 +984,30 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
 
         # Up Down
         if objName in ["pushButton_Up", "pushButton_Down"]:
-            if self.gdicParaData["UpDown_Power"] > 100:
-                self.gdicParaData["UpDown_Power"] = 1
+            if self.gdicParaData["PowerX2"] > 100:
+                self.gdicParaData["PowerX2"] = 1
             
             if objName == "pushButton_Up":
-                self.gdicPosData["UpDown"] = self.fRun_UpDownValueDisplay(self.gdicPosData["UpDown"]+self.gdicParaData["UpDown_Power"])
+                self.gdicPosData["X2"] = self.fRun_UpDownValueDisplay(self.gdicPosData["X2"]+self.gdicParaData["PowerX2"])
             else:
-                self.gdicPosData["UpDown"] = self.fRun_UpDownValueDisplay(self.gdicPosData["UpDown"]-self.gdicParaData["UpDown_Power"])
+                self.gdicPosData["X2"] = self.fRun_UpDownValueDisplay(self.gdicPosData["X2"]-self.gdicParaData["PowerX2"])
         # Front Rear
         else:
-            if self.gdicParaData["FrontRear_Power"] > 100:
-                self.gdicParaData["FrontRear_Power"] = 1
+            if self.gdicParaData["PowerX1"] > 100:
+                self.gdicParaData["PowerX1"] = 1
             
             if objName == "pushButton_Front":
-                self.gdicPosData["FrontRear"] = self.fRun_FRValueDisplay(self.gdicPosData["FrontRear"]-self.gdicParaData["FrontRear_Power"])
+                self.gdicPosData["X1"] = self.fRun_FRValueDisplay(self.gdicPosData["X1"]-self.gdicParaData["PowerX1"])
             else:
-                self.gdicPosData["FrontRear"] = self.fRun_FRValueDisplay(self.gdicPosData["FrontRear"]+self.gdicParaData["FrontRear_Power"])
+                self.gdicPosData["X1"] = self.fRun_FRValueDisplay(self.gdicPosData["X1"]+self.gdicParaData["PowerX1"])
 
     def fRun_AxisDisplay(self, lsAxisName , value = 0 ):
 
-        if  lsAxisName == "FrontRear":
-            self.gdicPosData["FrontRear"] = value
+        if  lsAxisName == "X1":
+            self.gdicPosData["X1"] = value
             self.fRun_FRValueDisplay(value)
         else:
-            self.gdicPosData["UpDown"] = value
+            self.gdicPosData["X2"] = value
             self.fRun_UpDownValueDisplay(value)
 
 
@@ -760,6 +1034,25 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.label_UpDownValue2.setText(str(value))
         return value
 
+    # ----------------------------------------------------------------------
+    # Function: fRun_ValueDisplay
+    # Description: Value Display
+    # Input : None
+    # Return: None
+    # ----------------------------------------------------------------------
+    def fRun_ValueDisplay(self, lsAxis):
+
+        lsMachineAxis = ParamTable.ArrPara_AxisMapping(lsAxis)
+
+        print("Axis:",lsAxis, "LMAxis:",lsMachineAxis)
+
+        if  lsMachineAxis == "FrontRear":
+            self.fRun_FRValueDisplay(self.gdicPosData[lsAxis])
+        else:
+            self.fRun_UpDownValueDisplay(self.gdicPosData[lsAxis])
+
+        my_print("fRun_Reset")
+
     # ===================================================================
     #    File Process
     # ===================================================================
@@ -770,8 +1063,24 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
     # ----------------------------------------------------------------------
     def fFile_GetParaDefaultData(self):
 
+        def update_default_data(defaultData, paramForm):
+            for CellName, CellForm in paramForm.items():
+                # Panel_TabeleForm load default
+                if CellForm.get('Item') is not None:
+                    for item in CellForm['Item']:
+                        defaultData[item['CellName']] = item['DefautlValue']
+                else:
+                    # Panel_TabeleForm load default
+                    if isinstance(CellForm, dict):
+                        for item, Data in CellForm.items():
+                            if Data.get("DefautlValue") is not None:
+                                defaultData[item] = Data['DefautlValue']
+
         defaultData = dict()
         defaultData.update(ParamTable.ArrPara_TableDefault)
+
+        update_default_data(defaultData, ParamTable.AdvancedParam_TableForm)
+
         return defaultData
 
 
@@ -979,10 +1288,10 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.pushButton_FRSet2.clicked.connect(self.fRun_Set)
 
         # Updown, Front Rear Position 
-        self.pushButton_Up.clicked.connect(self.fRun_Position)
-        self.pushButton_Down.clicked.connect(self.fRun_Position)
-        self.pushButton_Front.clicked.connect(self.fRun_Position)
-        self.pushButton_Rear.clicked.connect(self.fRun_Position)
+        # self.pushButton_Up.clicked.connect(self.fRun_Position)
+        # self.pushButton_Down.clicked.connect(self.fRun_Position)
+        # self.pushButton_Front.clicked.connect(self.fRun_Position)
+        # self.pushButton_Rear.clicked.connect(self.fRun_Position)
 
         # Process Button Switch
         self.pushButton_Process1.clicked.connect(self.fRun_ProcessSwitch)
@@ -1026,8 +1335,8 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.gdicErrorMsg = {}             # Reset Error String       
 
         self.gdicPosData = {}
-        self.gdicPosData["UpDown"] = 1
-        self.gdicPosData["FrontRear"] = 0
+        self.gdicPosData["X2"] = 1
+        self.gdicPosData["X1"] = 0
         self.gdicParameterTemp = {}
 
         self.gfProcessSwitch = "Process12"          # 設定成初始為 Process 1-2
@@ -1035,6 +1344,8 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.gfVRRunMode = 0                        # 1: Test Mode, 2: Production Mode
 
         self.gwLoadCellData = [0,0,0,0]
+        self.gArractData = []
+        self.giSendPos = 9999
 
         self.fUARTInit()
 
@@ -1046,18 +1357,18 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
     # ----------------------------------------------------------------------
     def fAll_initUI(self):
 
-        self.fDisplay_PWR("UpDown", self.gdicParaData["UpDown_Power"])
-        self.fDisplay_PWR("FrontRear", self.gdicParaData["FrontRear_Power"])
+        self.fDisplay_PWR("X2", self.gdicParaData["PowerX2"])
+        self.fDisplay_PWR("X1", self.gdicParaData["PowerX1"])
 
         self.fAll_LanguageDisplay(self.gdicParaData["Language"])
-        self.fRun_UpDownValueDisplay(self.gdicPosData["UpDown"])
-        self.fRun_FRValueDisplay(self.gdicPosData["FrontRear"])
+        self.fRun_UpDownValueDisplay(self.gdicPosData["X2"])
+        self.fRun_FRValueDisplay(self.gdicPosData["X1"])
 
         # Vaule display update
-        self.label_FrontRear1.setText(str(self.gdicParaData["FrontRear_Value1"]))
-        self.label_FrontRear2.setText(str(self.gdicParaData["FrontRear_Value2"]))           
-        self.label_Updown1.setText(str(self.gdicParaData["UpDown_Value1"]))
-        self.label_Updown2.setText(str(self.gdicParaData["UpDown_Value2"]))
+        self.label_FrontRear1.setText(str(self.gdicParaData["Value1X1"]))
+        self.label_FrontRear2.setText(str(self.gdicParaData["Value2X1"]))           
+        self.label_Updown1.setText(str(self.gdicParaData["Value1X2"]))
+        self.label_Updown2.setText(str(self.gdicParaData["Value2X2"]))
 
         self.fRun_ProcessSwitch()
 
