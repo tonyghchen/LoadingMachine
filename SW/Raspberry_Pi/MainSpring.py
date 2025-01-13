@@ -33,6 +33,7 @@ from datetime import    datetime
 # ------------------------------------------------------------------
 defProgramPath      = '/Paramter'
 defParameterFile    = 'Parameter.js'
+defEditTableFile    = 'EditTable.js'
 
 if os.name=='posix': # Raspi Testing
     if "tmp" in __file__:
@@ -278,6 +279,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
 
         if lsAxisName != "":
             #lsLMAxis = ParamTable.ArrPara_PHYAxisMapping(lsAxisName)
+            self.gdicPosData[lsAxisName] = lvalue
             self.fRun_ValueDisplay(lsAxisName)
             my_print("----- rPositon --- Axis:",lsAxisName, "Received Pos:",lvalue)
                        
@@ -1056,7 +1058,144 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
     # ===================================================================
     #    File Process
     # ===================================================================
-    # Description:     File
+    # -----------------------------------------------------------------
+    # Description:  initialize_dictionary
+    # Function:     Load Edit Table
+    # Input :       None
+    # Return:       None
+    # ----------------------------------------------------------------------
+    def initialize_dictionary(self, dictionary, key):
+        if dictionary is None:
+            dictionary = {}
+        if dictionary.get(key) is None:
+            dictionary[key] = {}
+
+    def fFile_LoadFullEdit(self, lCurrentTab = ""):
+
+        # Clear all data
+        self.gdicTabelConfig = {}
+        self.gdicTableData   = {}
+        self.gdicTabelDecode = {}
+        self.gArrActCmd= []
+        self.gdicTableGraph = {}
+        self.gdicTableTemp  = {}
+        self.fFile_LoadEditTable()       # Load Main Edit Data
+
+        liCol = 0
+        self.fEDIT_InitKeyinTableTemp()
+        my_print("End of Function: fFile_LoadFullEdit")
+        return 0        # 開啟正常
+
+    def fFile_LoadEditData(self, lfClear = 0):   # lfClear =2 - Not reload all
+
+        filePath = self.gFilePath 
+        fileName = filePath + '/' + defEditTableFile
+        my_print("EditTable Open: " + fileName)  
+
+        lfNewFile   = 0
+        loadData  = {}
+
+        if  lfClear == 0:
+            self.gArrAIData     = [] 
+            self.gArrActDisplay = []            
+            self.gArrProgramTool = []
+
+        self.gdicTabelConfig = {}
+        self.gArrActCmd = []
+        self.gdicTableData  = {}
+        self.gdicTabelDecode = {}
+        self.gdicTableGraph = {}
+
+        try:    
+            if os.path.exists(fileName):
+                with open(fileName, 'r', encoding='utf-8') as fileStream:  # load file from Json file
+                    fileContent = fileStream.read()  # 读取文件内容为字符串
+                    loadData = json.loads(fileContent)  # 将字符串加载为 Python 对象
+
+                if loadData.get("gdicTableData") is None:
+                    lfNewFile   = 1
+                else:
+                    lTableData                  = loadData.get('gdicTableData'      , {})
+                    lGraphData                  = loadData.get('gdicTableGraph'     , {})
+                    lTabelDecode                = loadData.get('gdicTabelDecode'    , {})
+                    lArrActCmd                  = loadData.get('gArrActable'        , {})
+                    lGraphRef                   = loadData.get('gdicTabelRef'       , {})
+
+                    self.gdicGraphRef    = copy.deepcopy(DataFormat.fData_DicRemoveString(lGraphRef))       # 將 位置轉換成 Int 因為 所有Int 都會被轉換成 String
+                    self.gdicTabelDecode = copy.deepcopy(DataFormat.fData_DicRemoveString(lTabelDecode))    # 將 位置轉換成 Int 因為 所有Int 都會被轉換成 String
+                    self.gdicTableGraph  = copy.deepcopy(DataFormat.fData_DicRemoveString(lGraphData))      # 將 位置轉換成 Int 因為 所有Int 都會被轉換成 String
+                    self.gArrActCmd = lArrActCmd   # 將 位置轉換成 Int 因為 所有Int 都會被轉換成 String
+
+                self.gdicTableData = copy.deepcopy(DataFormat.fData_DicRemoveString(lTableData))
+            else:
+                lfNewFile = 1
+        except:
+           lfNewFile = 1
+
+        if  lfNewFile == 1: 
+            my_print("File Open Error, Backup Target File")
+            self.fFile_BeckupFile(fileName)
+            self.fFile_SaveEditTable(1) # Force Save
+        return  lfNewFile   
+
+    # ----------------------------------------------------------------------
+    # Description   : Save Edit table
+    # Function      : fFile_SaveEditTable
+    # Input         : None
+    # Return        : None
+    # ----------------------------------------------------------------------
+    def fFile_SaveEditTable(self, lForceSave = ""):
+
+        if len(self.gdicTableData) == 0 and \
+            lForceSave != 1:
+            lisEmpty = 1
+        else:
+            if  lForceSave == 1:
+                lisEmpty = 0 
+            else:
+                for lsAxisName, lAxisData in self.gdicTableData.items():
+                    if len(lAxisData) == 0:
+                        lisEmpty = 1
+                    else:
+                        lisEmpty = 0
+                        break
+        filePath = self.gFilePath 
+
+        # Not Empty  self.gdicTableData                   
+        if lisEmpty == 0:       
+            try:
+                my_print("No Empty -gdicTableData")
+                # Save EditTable
+                # --------------------------------------------------------------
+                # Check /Program path fist               
+                if not os.path.isdir(filePath):           os.mkdir(filePath)
+
+                # Check file No path 
+                fileName = filePath + '/' + defEditTableFile
+                
+                # Combine Edittable + 時間軸 self.gdicTableGraph dictionary
+                combined_dict = {
+                    'gdicTableData'     : self.gdicTableData,     # Edit table keyin
+                    'gdicTableGraph'    : self.gdicTableGraph,
+                    'gdicTabelDecode'   : self.gdicTabelDecode,   # 重新整理 Edit Data 
+                    'gArrActable'       : self.gArrActCmd,
+                    'gdicTabelRef'      : self.gdicGraphRef,
+                }
+
+                my_print("EditTable + Graph Save: " + fileName)
+                self.fFile_SaveJsonFile(fileName, combined_dict)               
+                
+            except Exception as e:
+                # 处理特定错误或打印错误消息
+                my_print(f"Error processing : {e}")
+
+            except:
+                my_print("fFile_SaveEditTable Error !!!")
+
+        return  lisEmpty
+
+    # ----------------------------------------------------------------------
+    # Description: File
     # Function: Get Default Parameter
     # Input:    none
     # Return:   None
