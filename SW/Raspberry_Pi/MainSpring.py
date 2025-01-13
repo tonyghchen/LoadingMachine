@@ -277,8 +277,8 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         my_print("UART rPostion:",liAxis, "lxAxisName:",lsAxisName)
 
         if lsAxisName != "":
-            lsLMAxis = ParamTable.ArrPara_PHYAxisMapping(lsAxisName)
-            self.fRun_ValueDisplay(lsLMAxis)
+            #lsLMAxis = ParamTable.ArrPara_PHYAxisMapping(lsAxisName)
+            self.fRun_ValueDisplay(lsAxisName)
             my_print("----- rPositon --- Axis:",lsAxisName, "Received Pos:",lvalue)
                        
         my_print("End of fUART_rPosition")

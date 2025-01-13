@@ -4,7 +4,7 @@ def ArrPara_AxisMapping(lsLMAxis):
                 "X2" : "UpDown"     ,     # FrontRear
               }
     return switch.get(lsLMAxis, "")
-
+"""
 def ArrPara_PHYAxisMapping(lsAxis):
     switch = {
                 "X1"     :  1 ,     # UpDown
@@ -12,6 +12,15 @@ def ArrPara_PHYAxisMapping(lsAxis):
               }
     
     return switch.get(lsAxis, 1)
+"""
+def ArrPara_PHYAxisMapping(liAxis):
+    switch = {
+                1 : "X1",    # UpDown
+                2 : "X2",    # FrontRear
+              }
+    
+    return switch.get(liAxis, "")    
+    
 
 # ------------------------------------------------------------------
 #   Gereral Paramters
