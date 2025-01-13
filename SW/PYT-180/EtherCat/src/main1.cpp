@@ -366,7 +366,7 @@ void UserProcessPDO (void)
 					}
 					MAN_MOV.acc=tacc ;
 					MAN_MOV.frwacc=tfrwacc ;
-//					RTT("frwmov==%d MAN_MOV.frwacc=%d MAN_MOV.frwdir=%d MAN_MOV.frwstep=%d",frwmov,MAN_MOV.frwacc,MAN_MOV.frwdir,MAN_MOV.frwstep) 
+				RTT("frwmov==%d MAN_MOV.frwacc=%d MAN_MOV.frwdir=%d MAN_MOV.frwstep=%d",frwmov,MAN_MOV.frwacc,MAN_MOV.frwdir,MAN_MOV.frwstep) 
 					
 					lu32Pos=gstProcessState.u32Pos[MAN_MOV.DrvIdx] ;
 					if(MAN_MOV.dir ==0){
@@ -384,19 +384,19 @@ void UserProcessPDO (void)
 						}	
 					}
 					if(frwmov !=0){
-						lu32Pos=gstProcessState.u32Pos[FAxis] ;
+						//lu32Pos=gstProcessState.u32Pos[FAxis] ;
 						if(MAN_MOV.frwdir ==0){
-							gstProcessState.u32Pos[FAxis] +=frwmov ;
+							//gstProcessState.u32Pos[FAxis] +=frwmov ;
 						}
 						else{
-							gstProcessState.u32Pos[FAxis] -=frwmov ;
+							//gstProcessState.u32Pos[FAxis] -=frwmov ;
 						}
 					}
 					uint32_t cPos ;
 					EtherCatGetActualPos(MAN_MOV.DrvIdx, &cPos);
 					EtherCatSetTargetPos(MAN_MOV.DrvIdx, gstProcessState.u32Pos[MAN_MOV.DrvIdx]); 
-					EtherCatSetTargetPos(FAxis, gstProcessState.u32Pos[FAxis]); 
-// 					RTT("%d,%d,%d",gstProcessState.u32Pos[MAN_MOV.DrvIdx],gstProcessState.u32Pos[FAxis],FAxis) ;
+					//EtherCatSetTargetPos(FAxis, gstProcessState.u32Pos[FAxis]); 
+ 					RTT("Axis %d: Pos:%d,",MAN_MOV.DrvIdx, gstProcessState.u32Pos[MAN_MOV.DrvIdx]);
 					if(MAN_MOV.ms == MS_END){
 						MAN_MOV.ms=0 ;
 						MAN_MOV.acc=0 ;
