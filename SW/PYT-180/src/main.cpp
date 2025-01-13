@@ -51,13 +51,16 @@ struct TEST {
 
 void SEGGER_SYSVIEW_Update_SampleData(uint32_t u16Value);
 uint32_t    gErrorCount;
+
+
+#pragma optimize("", off)
 class LoadCell
 {
     
 private:
 #define MAX_DEVICE_ADDRESS  4
 #define REPORT_CYCLE        50      // 50 ms
-#define RESPONSE_TIMEOUT    2       // 2ms
+#define RESPONSE_TIMEOUT    4       // 2ms
 #define MAX_RECEIVER_SIZE   64
 
     enum STATE { IDLE= -1, QUERY = 0, WAIT_RESPONSE=1, WAIT_NEXTCMD=2, WAIT_NEXTREPORT=3 } ;
@@ -77,18 +80,21 @@ private:
     DWORD         u32CurrentMsTick ;
     
     uint32_t      u32ErrorCnt;
+    uint32_t      u32TimeoutCnt;
     char            szDebugMsg[128];
 public:
     LoadCell(){
         uart = UART3;//  LoadCell
 
         State = QUERY;
+        reset();
         u32CurrentMsTick = 0;
         u8ResponseTimeoutCnt = 0;
         
         u8NexCmdDelay = 1;
         
         u32ErrorCnt = 0;
+        u32TimeoutCnt = 0;
 	}
     
     void debug(char *title, char *buffer, uint8_t size)
@@ -132,13 +138,13 @@ public:
 	{
         int CmdLen = modbus_bsq_dg_ReadMeasureValue(CmdBuffer, u8DeviceAddr);
         
+        u8ResponseTimeoutCnt = 0;        
 		gstUARTModbus.send_bytes((char*)CmdBuffer, CmdLen);
-        debug("LC Tx", (char*)CmdBuffer, CmdLen);
+        //debug("LC Tx", (char*)CmdBuffer, CmdLen);
         //Trigger TXE interrupt
         if (!(uart->INTEN&UART_INTEN_THREIEN_Msk)){
             UART_EnableInt(uart, UART_INTEN_THREIEN_Msk) ;
         }
-        u8ResponseTimeoutCnt = 0;
 	}
    
     bool WaitResponse()
@@ -150,7 +156,7 @@ public:
             uint8_t   u8DataSize = gstUARTModbus.si_buf_len;
 			            
 			gstUARTModbus.read_bytes((char*)ResponseBuffer, u8DataSize);
-            debug("LC Rx", (char*)ResponseBuffer, u8DataSize);
+            //debug("LC Rx", (char*)ResponseBuffer, u8DataSize);
 			u8Addr = ResponseBuffer[0];
 			u8FunCode = ResponseBuffer[1];
 			u8DataLength = ResponseBuffer[2];
@@ -159,10 +165,6 @@ public:
 			
 			u16CRC = modbus_getCRC16(ResponseBuffer, 5);
 			if (u8Addr == u8DeviceAddr && u8FunCode == 3 &&  u16CRC == u16RecCRC){
-                if (u16MeasureValue <= 0x75){
-                    u32ErrorCnt++;
-
-                }
                 u16Value[u8DeviceAddr-1] = u16MeasureValue;
 				// Data Plot
                 if (u8Addr == 1){
@@ -170,6 +172,10 @@ public:
                 }
 				return (true);
 			}
+            else{
+                gErrorCount++; 
+                return (true);
+            }
 		}
         
 		return (false);
@@ -189,7 +195,10 @@ public:
             case WAIT_RESPONSE :    // Wait Response or Timeout
                 if (WaitResponse() == true || 
                     ++u8ResponseTimeoutCnt >= RESPONSE_TIMEOUT){
-                        
+                    
+                    if (u8ResponseTimeoutCnt >= RESPONSE_TIMEOUT )
+                        u32TimeoutCnt++;
+                    
                     // 蒐集完所有裝置上的資料
                     if (++u8DeviceAddr > MAX_DEVICE_ADDRESS){	
                         // 回報裝置的重量
@@ -223,7 +232,7 @@ public:
         }
     }
 };
-
+#pragma optimize("", on)
 
 LoadCell gLoadCellInfo;
 
@@ -395,6 +404,9 @@ int ReadAdc100()		//value 0~100
 {
 	int cnt=0 ;
 	int adc ;
+#if 1
+    adc = 0;
+#else    
 	do{
 		adc=FPGA_READ16(0xe0) ;
 //		RTT("real ADC=%d",adc) ;
@@ -405,6 +417,7 @@ int ReadAdc100()		//value 0~100
 	if(adc > 100)adc=100 ;
 	if(adc < 0)adc=0 ;
 //	RTT("ADC(0~100)=%d",adc);
+#endif    
 	return(adc) ;
 }
 
@@ -964,9 +977,9 @@ int main (void)
 	
 	while(1){
 		int ret ;
-		if((ret=FPGA_READ8(KEY_STATUS))!=0xff){
-		   //RTT("keycode =%x\n",ret) ;
-		}
+		//if((ret=FPGA_READ8(KEY_STATUS))!=0xff){
+		//   //RTT("keycode =%x\n",ret) ;
+		//}
 		if(flgResetCmd){
 			  flgResetCmd=false ;
 				ini_CmdBufTbl() ;
