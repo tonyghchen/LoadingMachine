@@ -536,65 +536,69 @@ int WaitServoOn (int *pnPos)
 	uint32_t u32TargetPosition[20];	
     int i, nret = 0, nDrvIdx, nExit = 1;
     uint16_t  u16StatusWord, u16CtlWord, u16RxPDOSize, u16OrgCtlWord;
-    uint8_t u8FifoCnt=0, u8MonitorDrvNo = 7;
+    uint8_t u8FifoCnt=0, u8MonitorDrvNo = 7, u8ServoCnt;
     
     MSG_DBG("Start WaitServoOn\n");
     u16RxPDOSize = RxPDODATASIZE();
  	  //pnPos[3]=0x12345678 ;
-    for (nDrvIdx = 0; nDrvIdx < EtherCatMasterGetDriverCnt(); nDrvIdx++) {
+    u8ServoCnt = EtherCatMasterGetDriverCnt();
+    for (nDrvIdx = 0; nDrvIdx < u8ServoCnt; nDrvIdx++) {
          EtherCatSetTargetPos(nDrvIdx, pnPos[nDrvIdx]);	
-		}
-		for (i = 0; i < 1000; i++) {
-			//if (u8FifoCnt < (TEST_RXFIFO_CNT - 2)){
-			if (1){
-					nret = ECM_EcatPdoFifoDataExchangeAdv((ECM_FIFO_WR | ECM_FIFO_RD), 1, RxPDOData, TxPDOData, u16RxPDOSize, &u8FifoCnt, 0, 0, 0);
-					if (nret == 5 || nret == 7){
-							nExit = 1;
-							//Get valid data
-							for (nDrvIdx = 0; nDrvIdx < EtherCatMasterGetDriverCnt(); nDrvIdx++) {
+	}
+	for (i = 0; i < 1000; i++) {
+		//if (u8FifoCnt < (TEST_RXFIFO_CNT - 2)){
+		if (1){
+			nret = ECM_EcatPdoFifoDataExchangeAdv((ECM_FIFO_WR | ECM_FIFO_RD), 1, RxPDOData, TxPDOData, u16RxPDOSize, &u8FifoCnt, 0, 0, 0);
+			if (nret == 5 || nret == 7){
+				nExit = 1;
+				//Get valid data
+				for (nDrvIdx = 0; nDrvIdx < u8ServoCnt; nDrvIdx++) {
+					EtherCatGetTargetPos(nDrvIdx, (uint32_t*)&u32TargetPosition[nDrvIdx]);
+                    /*
+					if (nDrvIdx == 3){
+						MSG_DBG("Driver %d: Target Pos:%04X(%d), Act Pos:%04X(%d)\n", 
+						3, u32TargetPosition[3], u32TargetPosition[3], pnPos[3], pnPos[3]);								
+					
+					}
+                    */
+					EtherCatGetActualPos(nDrvIdx, (uint32_t*)&pnPos[nDrvIdx]);
 
-											EtherCatGetTargetPos(nDrvIdx, (uint32_t*)&u32TargetPosition[nDrvIdx]);
-									if (nDrvIdx == 3){
-										MSG_DBG("Driver %d: Target Pos:%04X(%d), Act Pos:%04X(%d)\n", 
-										3, u32TargetPosition[3], u32TargetPosition[3], pnPos[3], pnPos[3]);								
-									
-										}
-									EtherCatGetActualPos(nDrvIdx, (uint32_t*)&pnPos[nDrvIdx]);
-
-									//EtherCatSetTargetPos(nDrvIdx, pnPos[nDrvIdx]);
-									EtherCatGetStatusWord(nDrvIdx, &u16StatusWord);
-									EtherCatGetCtrlWord(nDrvIdx, &u16CtlWord);
-									u16OrgCtlWord = u16CtlWord;
-									nret = Cia402Control(1, u16StatusWord, &u16CtlWord);
-									EtherCatSetCtrlWord(nDrvIdx, u16CtlWord);
-									MSG_DBG("(%d,%d) S:0x%04X C:cur:0x%04X, new:0x%04X\n" \
-											, nDrvIdx, i\
-											, u16StatusWord \
-											, u16OrgCtlWord, u16CtlWord);
-									if (nret == 0) {
-											nExit = 0;
-									}else if (nret == 1){
-											MSG_DBG("%d Position offset %d\n",nDrvIdx,pnPos[nDrvIdx]);
-									}                       
-							}
-							if (nExit) {
-									MSG_DBG("WaitServoOn PASS\n");
-									MSG_DBG("Driver %d: Target Pos:%04X(%d), Act Pos:%04X(%d)\n", 
-									2, u32TargetPosition[2], u32TargetPosition[2], pnPos[2], pnPos[2]);	
+					//EtherCatSetTargetPos(nDrvIdx, pnPos[nDrvIdx]);
+					EtherCatGetStatusWord(nDrvIdx, &u16StatusWord);
+					EtherCatGetCtrlWord(nDrvIdx, &u16CtlWord);
+					u16OrgCtlWord = u16CtlWord;
+					nret = Cia402Control(1, u16StatusWord, &u16CtlWord);
+					EtherCatSetCtrlWord(nDrvIdx, u16CtlWord);
+					MSG_DBG("(%d,%d) S:0x%04X C:cur:0x%04X, new:0x%04X\n" \
+							, nDrvIdx, i\
+							, u16StatusWord \
+							, u16OrgCtlWord, u16CtlWord);
+					if (nret == 0) {
+						nExit = 0;
+					}else if (nret == 1){
+						MSG_DBG("%d Position offset %d(0x%04X\n",nDrvIdx,pnPos[nDrvIdx], pnPos[nDrvIdx]);
+					}                       
+                }
+                if (nExit) {
+                    MSG_DBG("WaitServoOn PASS\n");
+                    /*
+                    MSG_DBG("Driver %d: Target Pos:%04X(%d), Act Pos:%04X(%d)\n", 
+                    2, u32TargetPosition[2], u32TargetPosition[2], pnPos[2], pnPos[2]);	
 
 
-								
-									MSG_DBG("Driver %d: Target Pos:%04X(%d), Act Pos:%04X(%d)\n", 
-									3, u32TargetPosition[3], u32TargetPosition[3], pnPos[3], pnPos[3]);								
-									return 1;
-							}
-						}
+				
+                    MSG_DBG("Driver %d: Target Pos:%04X(%d), Act Pos:%04X(%d)\n", 
+                    3, u32TargetPosition[3], u32TargetPosition[3], pnPos[3], pnPos[3]);	
+                    */                                    
+                    return 1;
+                }
+            }
         }
-				else{
-					//MSG_DBG("FiFo Full:%d\n", u8FifoCnt);
-					//        UserDelay(1000000);
-					//u8FifoCnt = 0;
-				}
+		else{
+			//MSG_DBG("FiFo Full:%d\n", u8FifoCnt);
+			//        UserDelay(1000000);
+			//u8FifoCnt = 0;
+		}
         UserDelay(10000);
     }
     MSG_ERR("WaitServoOn timeout\n");
@@ -1062,7 +1066,7 @@ int EtherCatMasterOpen (uint32_t u32SPIClock, uint32_t u32CanOpenOpMode, uint32_
     int nret ;    
    
     // initial Debug trace 
-    TRACE_INIT();   	
+    //TRACE_INIT();   	
 #if 1
     gMasterInfo.pPDOCallback = callback;  
     nret = nret =  ec_master_init_old(u32SPIClock, u32CanOpenOpMode, u32ActiveCode, u32DCTimes_us);

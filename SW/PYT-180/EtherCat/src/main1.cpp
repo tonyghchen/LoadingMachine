@@ -396,7 +396,7 @@ void UserProcessPDO (void)
 					EtherCatGetActualPos(MAN_MOV.DrvIdx, &cPos);
 					EtherCatSetTargetPos(MAN_MOV.DrvIdx, gstProcessState.u32Pos[MAN_MOV.DrvIdx]); 
 					//EtherCatSetTargetPos(FAxis, gstProcessState.u32Pos[FAxis]); 
- 					RTT("Axis %d: Pos:%d,",MAN_MOV.DrvIdx, gstProcessState.u32Pos[MAN_MOV.DrvIdx]);
+ 					RTT("Axis %d: TPos:%d, APos=%d, m:%d",MAN_MOV.DrvIdx, gstProcessState.u32Pos[MAN_MOV.DrvIdx], cPos, mov);
 					if(MAN_MOV.ms == MS_END){
 						MAN_MOV.ms=0 ;
 						MAN_MOV.acc=0 ;
@@ -1345,7 +1345,7 @@ static int AppEtherCatConfig(void)
         //讀取馬達目前位置
         for (nDriver=0; nDriver < gstProcessState.u8DriverCnt; nDriver++){
             pDriverInfo = &gstProcessState.pDriverInfo[nDriver];
-            EtherCatGetActualPos(nDriver+1, &pDriverInfo->u32InitPos);
+            EtherCatGetActualPos(nDriver, &pDriverInfo->u32InitPos);
             pDriverInfo->u32Pos = pDriverInfo->u32InitPos ; 
         }
     }

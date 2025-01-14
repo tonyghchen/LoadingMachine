@@ -825,6 +825,7 @@ int main (void)
 
 #if 1
     Config_Hardware(APP_SPI_CLOCK);
+    TRACE_INIT();   	
 #else
   uint8_t tt1,stl, stm,tl,tm ; ;
 	do{
@@ -1436,6 +1437,7 @@ int main (void)
 				  
 					MAN_MOV.step=*(uint32_t *)(&CmdBufTbl[ridx_CmdBufTbl].buf[idx]) ;
 					idx+=4 ;
+                    MAN_MOV.frwstep = MAN_MOV.step;
 				
 				
 				  MAN_MOV.lstep=*((uint32_t *)&(CmdBufTbl[ridx_CmdBufTbl].buf[idx]) );

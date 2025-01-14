@@ -1419,8 +1419,7 @@ int32_t ECM_EcatPdoFifoDataExchangeAdv(uint8_t u8Op, uint8_t u8Cnt, uint8_t *pRx
 		return -1;//CRC error
 	}
 	
-	u32TargetPos = *(uint32_t*)&g_pFifoCmd->Data[28];		MSG_DBG("Driver %d: Target Pos:%04X(%d), \n", 
-									3, u32TargetPos, u32TargetPos);								
+	u32TargetPos = *(uint32_t*)&g_pFifoCmd->Data[28];		//MSG_DBG("Driver %d: Target Pos:%04X(%d), \n", 3, u32TargetPos, u32TargetPos);								
 
 	if(pu8RxPdoFifoCnt){
 		if(u8Op & ECM_FIFO_WR){
